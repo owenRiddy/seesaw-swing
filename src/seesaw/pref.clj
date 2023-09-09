@@ -10,20 +10,20 @@
 
 (ns seesaw.pref)
 
-(defn ^java.util.prefs.Preferences 
+(defn ^java.util.prefs.Preferences
   preferences-node*
   "Return the java.util.prefs.Preferences/userRoot for the specified
 namespace."
   ([ns]
-     (.node (java.util.prefs.Preferences/userRoot) (str (ns-name ns)))))
+   (.node (java.util.prefs.Preferences/userRoot) (str (ns-name ns)))))
 
 (defmacro preferences-node
   "Return the java.util.prefs.Preferences/userRoot for the current
   or the specified namespace."
   ([]
-     `(preferences-node* ~*ns*))
+   `(preferences-node* ~*ns*))
   ([ns]
-     `(preferences-node* ~ns)))
+   `(preferences-node* ~ns)))
 
 (defn- serialize-value [v]
   (binding [*print-dup* true] (pr-str v)))
@@ -44,7 +44,7 @@ namespace."
       (reset! v)
       (add-watch (keyword (gensym "pref-atom-watcher"))
                  (fn [k r o n]
-                   (when (not= o n) 
+                   (when (not= o n)
                      (.put node key (serialize-value n))))))))
 
 (defmacro bind-preference-to-atom
@@ -62,9 +62,9 @@ namespace."
   "Create and return an atom which has been bound using
   bind-preference-to-atom for the current namespace."
   ([key]
-     `(let [atom# (atom nil)]
-        (bind-preference-to-atom ~key atom#)))
+   `(let [atom# (atom nil)]
+      (bind-preference-to-atom ~key atom#)))
   ([key initial-value]
-     `(let [atom# (atom ~initial-value)]
-        (bind-preference-to-atom ~key atom#))))
+   `(let [atom# (atom ~initial-value)]
+      (bind-preference-to-atom ~key atom#))))
 

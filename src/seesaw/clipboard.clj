@@ -16,9 +16,9 @@
   "
   ([] (contents dnd/string-flavor))
   ([flavor]
-    (try
-      (.getData (system) (dnd/to-raw-flavor flavor))
-      (catch java.awt.datatransfer.UnsupportedFlavorException e nil))))
+   (try
+     (.getData (system) (dnd/to-raw-flavor flavor))
+     (catch java.awt.datatransfer.UnsupportedFlavorException e nil))))
 
 (defn ^java.awt.datatransfer.Clipboard contents!
   "Set the content of the sytem clipboard to the given transferable. If
@@ -32,13 +32,13 @@
     http://docs.oracle.com/javase/7/docs/api/java/awt/datatransfer/Clipboard.html
   "
   ([transferable]
-    (contents! transferable nil))
+   (contents! transferable nil))
   ([transferable ^java.awt.datatransfer.ClipboardOwner owner]
    (let [cb (system)]
      (cond
        (string? transferable)
-         (contents! (dnd/default-transferable [dnd/string-flavor transferable]) owner)
-     :else
+       (contents! (dnd/default-transferable [dnd/string-flavor transferable]) owner)
+       :else
        (.setContents (system) ^java.awt.datatransfer.Transferable transferable owner))
      cb)))
 

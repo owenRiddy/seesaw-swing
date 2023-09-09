@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Function to create a label with a rounded border and background."
       :author "Dave Ray"}
-  seesaw.widgets.rounded-label
+ seesaw.widgets.rounded-label
   (:use [seesaw.core :only [label label-options]]
         [seesaw.options :only [apply-options]]
         [seesaw.options :only [apply-options option-map default-option]]
@@ -42,8 +42,8 @@
                 (doto g
                   (.setColor (.getBackground c))
                   (.fillRoundRect
-                    0 0 (dec (.getWidth c)) (dec (.getHeight c))
-                    @radius @radius)))
+                   0 0 (dec (.getWidth c)) (dec (.getHeight c))
+                   @radius @radius)))
         widget (rounded-label-proxy paint)]
     (apply-options widget opts)))
 
@@ -53,5 +53,5 @@
   (-> (frame :content (rounded-label :border 5
                                      :background :darkgrey
                                      :text "I'm a rounded label"))
-    pack! show!))
+      pack! show!))
 

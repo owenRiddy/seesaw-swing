@@ -13,40 +13,40 @@
   (:require [seesaw.table :as table]))
 
 (defn drop-handler [t support]
-  (let [flavors (.getDataFlavors support)] 
+  (let [flavors (.getDataFlavors support)]
     (table/clear! t)
-    (apply table/insert-at! t 
-          (mapcat 
+    (apply table/insert-at! t
+           (mapcat
             (fn [f i] [0 (assoc (bean f) :N (format "%04d" i))])
             flavors
             (iterate inc 0)))))
 
 (defn app []
   (let [t (doto (table
-            :show-grid? true
-            :model [:columns [:N
-                              :representationClass
-                              :primaryType
-                              :subType
-                              :humanPresentableName]])
-            (.setAutoCreateRowSorter true))] 
+                 :show-grid? true
+                 :model [:columns [:N
+                                   :representationClass
+                                   :primaryType
+                                   :subType
+                                   :humanPresentableName]])
+            (.setAutoCreateRowSorter true))]
     (frame
-      :title "Seesaw Drag-n-Drop Explorer"
-      :size [640 :by 480]
-      :content (border-panel
-                :north (text
-                        :text "Drop stuff here. Flavors shown below."
-                        :background :lightblue
-                        :font "Arial-BOLD-20"
-                        :editable? false
-                        :drop-mode :insert
-                        :transfer-handler (everything-transfer-handler (partial drop-handler t)))
-                :center (scrollable t)))))
+     :title "Seesaw Drag-n-Drop Explorer"
+     :size [640 :by 480]
+     :content (border-panel
+               :north (text
+                       :text "Drop stuff here. Flavors shown below."
+                       :background :lightblue
+                       :font "Arial-BOLD-20"
+                       :editable? false
+                       :drop-mode :insert
+                       :transfer-handler (everything-transfer-handler (partial drop-handler t)))
+               :center (scrollable t)))))
 
 (defn -main [& args]
   (invoke-later
-    (-> (app)
-      show!)))
+   (-> (app)
+       show!)))
 
 ;(-main)
 

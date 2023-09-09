@@ -5,9 +5,9 @@
 
 (defn scrollable-image [id]
   (sc/scrollable
-    (sc/label :id id 
+   (sc/label :id id
               ;:icon "file:///Users/dave/Desktop/IMG_0058.JPG"
-              )))
+             )))
 
 (defn pan [view-to-pan dx dy]
   (let [^javax.swing.JViewport  viewport (.. view-to-pan getParent)
@@ -22,34 +22,34 @@
   [(/ (.getWidth view-to-pan) (.getWidth panner))
    (/ (.getHeight view-to-pan) (.getHeight panner))])
 
-(defn pan-on-drag 
+(defn pan-on-drag
   ([view-to-pan & {:keys [panner speed] :or {panner view-to-pan speed 1.0}}]
-    (behave/when-mouse-dragged panner 
-      :drag (fn [e [dx dy]] 
-              (let [[sx sy] (calculate-scales panner view-to-pan)] 
-                (pan view-to-pan (* dx sx speed) (* dy sy speed)))))))
+   (behave/when-mouse-dragged panner
+                              :drag (fn [e [dx dy]]
+                                      (let [[sx sy] (calculate-scales panner view-to-pan)]
+                                        (pan view-to-pan (* dx sx speed) (* dy sy speed)))))))
 
 (defn add-behaviors [root]
   (pan-on-drag (sc/select root [:#image]))
-  (pan-on-drag (sc/select root [:#image]) 
-               :panner (sc/select root [:#panner]) 
+  (pan-on-drag (sc/select root [:#image])
+               :panner (sc/select root [:#panner])
                :scale 5.0)
   root)
 
 (defn app []
   (sc/frame
-    :title "Pan on drag"
-    :size [480 :by 480]
-    :content 
-     (sc/border-panel 
-       :north  "Click and drag to pan the image"
-       :center (scrollable-image :image)
-       :south  (sc/flow-panel 
-                 :items ["Or drag on the blue field to pan the image"
-                        (sc/label 
-                          :id         :panner
-                          :size       [50 :by 50]
-                          :background :blue)]))))
+   :title "Pan on drag"
+   :size [480 :by 480]
+   :content
+   (sc/border-panel
+    :north  "Click and drag to pan the image"
+    :center (scrollable-image :image)
+    :south  (sc/flow-panel
+             :items ["Or drag on the blue field to pan the image"
+                     (sc/label
+                      :id         :panner
+                      :size       [50 :by 50]
+                      :background :blue)]))))
 
 (defexample []
   (-> (app) add-behaviors))

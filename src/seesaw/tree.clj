@@ -21,7 +21,7 @@
 (defn- ensure-array
   [v] (if v (to-array v)))
 
-(defn node-structure-changed 
+(defn node-structure-changed
   "Fire a node structure changed event on a tree model created with 
   (simple-tree-model). node-path is the sequence of nodes from the model
   root to the node whose structure changed.
@@ -33,13 +33,13 @@
   "
   [tree-model node-path]
   (fire-event* tree-model
-              :tree-structure-changed
-              (javax.swing.event.TreeModelEvent. tree-model
-                                                 (ensure-array node-path)
-                                                 nil
-                                                 nil)))
+               :tree-structure-changed
+               (javax.swing.event.TreeModelEvent. tree-model
+                                                  (ensure-array node-path)
+                                                  nil
+                                                  nil)))
 
-(defn nodes-removed 
+(defn nodes-removed
   "Fire a node removed event on a tree model created with 
   (simple-tree-model). parent-path is the path to the parent node,
   indices is a seq of the indices of the removed nodes and children
@@ -51,13 +51,13 @@
   "
   [tree-model parent-path indices children]
   (fire-event* tree-model
-              :tree-nodes-removed
-              (javax.swing.event.TreeModelEvent. tree-model 
-                                                 (ensure-array parent-path)
-                                                 (int-array indices)
-                                                 (ensure-array children))))
+               :tree-nodes-removed
+               (javax.swing.event.TreeModelEvent. tree-model
+                                                  (ensure-array parent-path)
+                                                  (int-array indices)
+                                                  (ensure-array children))))
 
-(defn node-removed 
+(defn node-removed
   "Fire a node removed event on a tree model created with 
   (simple-tree-model). parent-path is the path to the parent node,
   index is the index of the removed node and child is the removed node.
@@ -70,14 +70,14 @@
   (nodes-removed tree-model parent-path [index] [child]))
 
 (defn- build-insert-or-change-event [tree-model parent-path children]
-  (let [indices (if-let [parent (last parent-path)] 
-                  (map #(.getIndexOfChild tree-model parent %) children)) ]
-    (javax.swing.event.TreeModelEvent. tree-model 
+  (let [indices (if-let [parent (last parent-path)]
+                  (map #(.getIndexOfChild tree-model parent %) children))]
+    (javax.swing.event.TreeModelEvent. tree-model
                                        (ensure-array parent-path)
                                        (if indices (int-array indices))
                                        (ensure-array children))))
 
-(defn nodes-inserted 
+(defn nodes-inserted
   "Fire a node insertion event. parent-path is the path to the parent of the
   newly inserted children. children is the newly inserted nodes.
   
@@ -86,11 +86,11 @@
     (seesaw.tree/simple-tree-model)
   "
   [tree-model parent-path children]
-  (fire-event* tree-model 
-              :tree-nodes-inserted
-              (build-insert-or-change-event tree-model parent-path children)))
+  (fire-event* tree-model
+               :tree-nodes-inserted
+               (build-insert-or-change-event tree-model parent-path children)))
 
-(defn node-inserted 
+(defn node-inserted
   "Fire a node insertion event. parent-path is the path to the parent of the
   newly inserted child. child is the newly inserted node.
   
@@ -101,11 +101,11 @@
   [tree-model node-path]
   (let [parent-path (butlast node-path)
         node        (last node-path)]
-    (nodes-inserted tree-model 
-                   (or parent-path [node]) 
-                   (if parent-path [node]))))
+    (nodes-inserted tree-model
+                    (or parent-path [node])
+                    (if parent-path [node]))))
 
-(defn nodes-changed 
+(defn nodes-changed
   "Fire a node changed event. parent-path is the path to the parent of the
   changed children. children is the changed nodes.
 
@@ -116,11 +116,11 @@
     (seesaw.tree/simple-tree-model)
   "
   [tree-model parent-path children]
-  (fire-event* tree-model 
-              :tree-nodes-changed 
-              (build-insert-or-change-event tree-model parent-path children)))
+  (fire-event* tree-model
+               :tree-nodes-changed
+               (build-insert-or-change-event tree-model parent-path children)))
 
-(defn node-changed 
+(defn node-changed
   "Fire a node changed event. parent-path is the path to the parent of the
   changed node. child is the changed node.
 
@@ -133,8 +133,8 @@
   [tree-model node-path]
   (let [parent-path (butlast node-path)
         node        (last node-path)]
-    (nodes-changed tree-model 
-                   (or parent-path [node]) 
+    (nodes-changed tree-model
+                   (or parent-path [node])
                    (if parent-path [node]))))
 
 (defn simple-tree-model
@@ -153,7 +153,7 @@
       (getRoot [this] root)
       (getChildCount [this parent] (count (children parent)))
       (getChild [this parent index] (nth (children parent) index))
-      (getIndexOfChild [this parent child] 
+      (getIndexOfChild [this parent child]
         (first (keep-indexed #(when (= %2 child) %1) (children parent))))
       (isLeaf [this node] (not (branch? node)))
       (addTreeModelListener [this listener]

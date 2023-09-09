@@ -14,9 +14,9 @@
 
 (def ^{:private true} timer-opts
   (option-map
-    (bean-option :initial-delay javax.swing.Timer)
-    (bean-option :delay javax.swing.Timer)
-    (bean-option :repeats? javax.swing.Timer boolean)))
+   (bean-option :initial-delay javax.swing.Timer)
+   (bean-option :delay javax.swing.Timer)
+   (bean-option :repeats? javax.swing.Timer boolean)))
 
 (option-provider javax.swing.Timer timer-opts)
 

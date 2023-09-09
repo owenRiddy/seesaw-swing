@@ -15,11 +15,9 @@
            [java.awt.event InputEvent])
   (:require [clojure.string :only [join split]]))
 
-(def ^{:private true} modifier-masks {
-  InputEvent/CTRL_MASK "ctrl"
-  InputEvent/META_MASK "meta"
-  InputEvent/ALT_MASK  "alt"
-})
+(def ^{:private true} modifier-masks {InputEvent/CTRL_MASK "ctrl"
+                                      InputEvent/META_MASK "meta"
+                                      InputEvent/ALT_MASK  "alt"})
 
 (defn- preprocess-descriptor [s]
   (let [mask (modifier-masks (.. (Toolkit/getDefaultToolkit) getMenuShortcutKeyMask))]
@@ -42,7 +40,7 @@
 
   See http://download.oracle.com/javase/6/docs/api/javax/swing/KeyStroke.html#getKeyStroke(java.lang.String)"
   [arg]
-  (cond 
+  (cond
     (nil? arg)                nil
     (instance? KeyStroke arg) arg
     (char? arg)               (KeyStroke/getKeyStroke ^Character arg)

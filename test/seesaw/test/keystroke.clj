@@ -16,25 +16,25 @@
            [java.awt Toolkit]))
 
 (describe keystroke
-  (it "creates a keystroke from a descriptor string"
-    (let [ks (keystroke "ctrl S")]
-      (expect (= KeyStroke (class ks)))
-      (expect (= java.awt.event.KeyEvent/VK_S (.getKeyCode ks))))))
+          (it "creates a keystroke from a descriptor string"
+              (let [ks (keystroke "ctrl S")]
+                (expect (= KeyStroke (class ks)))
+                (expect (= java.awt.event.KeyEvent/VK_S (.getKeyCode ks))))))
 
 (describe keystroke
-  (it "returns nil for nil input"
-    (nil? (keystroke nil)))
-  (it "returns input if it's a KeyStroke"
-    (let [ks (KeyStroke/getKeyStroke "alt X")]
-      (expect (= ks (keystroke ks)))))
-  (it "returns a keystroke for a string"
-    (let [ks (keystroke "alt X")]
-      (expect (= java.awt.event.KeyEvent/VK_X (.getKeyCode ks)))))
-  (it "substitute platform-specific menu modifier for \"menu\" modifier"
-    (let [ks (keystroke "menu X")]
-      (expect (= java.awt.event.KeyEvent/VK_X (.getKeyCode ks)))
-      (expect (= (.. (Toolkit/getDefaultToolkit) getMenuShortcutKeyMask) (bit-and 7 (.getModifiers ks))))))
-  (it "returns a keystroke for a char"
-    (let [ks (keystroke \A)]
-      (expect (= \A (.getKeyChar ks))))))
+          (it "returns nil for nil input"
+              (nil? (keystroke nil)))
+          (it "returns input if it's a KeyStroke"
+              (let [ks (KeyStroke/getKeyStroke "alt X")]
+                (expect (= ks (keystroke ks)))))
+          (it "returns a keystroke for a string"
+              (let [ks (keystroke "alt X")]
+                (expect (= java.awt.event.KeyEvent/VK_X (.getKeyCode ks)))))
+          (it "substitute platform-specific menu modifier for \"menu\" modifier"
+              (let [ks (keystroke "menu X")]
+                (expect (= java.awt.event.KeyEvent/VK_X (.getKeyCode ks)))
+                (expect (= (.. (Toolkit/getDefaultToolkit) getMenuShortcutKeyMask) (bit-and 7 (.getModifiers ks))))))
+          (it "returns a keystroke for a char"
+              (let [ks (keystroke \A)]
+                (expect (= \A (.getKeyChar ks))))))
 

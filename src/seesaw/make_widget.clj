@@ -17,9 +17,9 @@
   (make-widget* [v]))
 
 (defmacro ^{:private true} def-make-widget [t b & forms]
-  `(extend-type 
-     ~t
-     MakeWidget 
+  `(extend-type
+    ~t
+     MakeWidget
      (~'make-widget* ~b ~@forms)))
 
 (def-make-widget java.awt.Component [c] c)
@@ -28,21 +28,21 @@
 
 (def-make-widget javax.swing.Action [v] (JButton. v))
 
-(def-make-widget clojure.lang.Keyword 
-  [v] 
+(def-make-widget clojure.lang.Keyword
+  [v]
   (condp = v
     :separator (javax.swing.JSeparator.)
     :fill-h (Box/createHorizontalGlue)
     :fill-v (Box/createVerticalGlue)))
 
-(def-make-widget clojure.lang.IPersistentVector 
+(def-make-widget clojure.lang.IPersistentVector
   [[v0 v1 v2]]
   (cond
     (= :fill-h v0) (Box/createHorizontalStrut v1)
     (= :fill-v v0) (Box/createVerticalStrut v1)
     (= :by v1) (Box/createRigidArea (Dimension. v0 v2))))
 
-(def-make-widget String 
+(def-make-widget String
   [v]
   (JLabel. v))
 

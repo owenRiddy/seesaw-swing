@@ -19,11 +19,11 @@
 ; Function to create a shape for a hand
 (defn hand [length width]
   (path []
-    (move-to 0.0       length)
-    (line-to width     0.0)
-    (line-to 0.0       (- width))
-    (line-to (- width) 0.0)
-    (line-to 0.0       length)))
+        (move-to 0.0       length)
+        (line-to width     0.0)
+        (line-to 0.0       (- width))
+        (line-to (- width) 0.0)
+        (line-to 0.0       length)))
 
 ; Style for drawing hands
 (def hand-style (style :foreground "#999999"
@@ -42,9 +42,9 @@
 
   (let [c (java.util.Calendar/getInstance)]
     (+
-      (* (.get c java.util.Calendar/HOUR_OF_DAY) 60 60)
-      (* (.get c java.util.Calendar/MINUTE) 60)
-      (.get c java.util.Calendar/SECOND))))
+     (* (.get c java.util.Calendar/HOUR_OF_DAY) 60 60)
+     (* (.get c java.util.Calendar/MINUTE) 60)
+     (.get c java.util.Calendar/SECOND))))
 
 (defn paint-clock [^javax.swing.JComponent c ^java.awt.Graphics2D g]
   (let [width       (.getWidth c)
@@ -58,21 +58,21 @@
     (scale g 1 -1) ; flip y
     ; Draw ticks
     (push g
-      (dotimes [n 12]
-        (rotate g (- (/ 360 12)))
-        (draw   g (circle 0 (/ m 2) 3) tick-style)))
+          (dotimes [n 12]
+            (rotate g (- (/ 360 12)))
+            (draw   g (circle 0 (/ m 2) 3) tick-style)))
     ; Draw minute hand
     (push g
-      (rotate g (- (* (/ (mod minutes 60) 60) 360)))
-      (draw   g (hand r (/ r 20)) hand-style))
+          (rotate g (- (* (/ (mod minutes 60) 60) 360)))
+          (draw   g (hand r (/ r 20)) hand-style))
     ; Draw hour hand
     (push g
-      (rotate g (- (* (/ hours 12) 360)))
-      (draw   g (hand (/ r 1.5) (/ r 20)) hand-style))
+          (rotate g (- (* (/ hours 12) 360)))
+          (draw   g (hand (/ r 1.5) (/ r 20)) hand-style))
     ; Draw second hand
     (push g
-      (rotate g (- (* (/ (mod seconds 3600) 60) 360)))
-      (draw   g (line 0 0 0 r) second-style))
+          (rotate g (- (* (/ (mod seconds 3600) 60) 360)))
+          (draw   g (line 0 0 0 r) second-style))
     ; Draw a little circle in the middle
     (draw g (circle 0 0 3) tick-style)))
 
@@ -80,9 +80,9 @@
   (let [cvs (canvas :id :canvas :background "#BBBBBB" :paint paint-clock)
         t (timer (fn [e] (repaint! cvs)) :delay 1000)]
     (frame
-      :title "Seesaw Canvas Clock"
-      :width 400 :height 400
-      :content cvs)))
+     :title "Seesaw Canvas Clock"
+     :width 400 :height 400
+     :content cvs)))
 
 ;(run :dispose)
 

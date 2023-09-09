@@ -15,14 +15,14 @@
             [clojure.java.io :as io]))
 
 (defn make-frame []
-  (frame :title "RSyntax Example" :width 500 :height 400 
-    :content (scrollable 
-               (rsyntax/text-area 
-                 :text (io/resource "seesaw/test/examples/rsyntax.clj")
-                 :syntax :clojure))))
+  (frame :title "RSyntax Example" :width 500 :height 400
+         :content (scrollable
+                   (rsyntax/text-area
+                    :text (io/resource "seesaw/test/examples/rsyntax.clj")
+                    :syntax :clojure))))
 
 (defexample []
-  (make-frame) )
+  (make-frame))
 
 ;(run :dispose)
 

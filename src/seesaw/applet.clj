@@ -11,7 +11,7 @@
 (ns ^{:doc "Macros and functions that make creating an applet with Seesaw a
             little less painful."
       :author "Dave Ray"}
-  seesaw.applet
+ seesaw.applet
   (:use [seesaw core])
   (:import [javax.swing JApplet]))
 
@@ -66,19 +66,19 @@
     http://download.oracle.com/javase/tutorial/deployment/applet/index.html
   "
   [& {:keys [name init start stop content]
-      :or {init    '(fn [applet]) 
-           start   '(fn [applet]) 
+      :or {init    '(fn [applet])
+           start   '(fn [applet])
            stop    '(fn [applet])
            content '(fn [applet] (seesaw.core/label "A Seesaw Applet"))}}]
   (let [applet (gensym "applet")]
     `(do
-      (gen-class
+       (gen-class
         :name ~(or name (ns-name *ns*))
         :extends javax.swing.JApplet
         :prefix "-seesaw-applet-")
 
-      (defn ~'-seesaw-applet-init [#^javax.swing.JApplet ~applet]
-        (seesaw.core/invoke-later 
+       (defn ~'-seesaw-applet-init [#^javax.swing.JApplet ~applet]
+         (seesaw.core/invoke-later
           (do
             (~init ~applet)
             (doto ~applet
@@ -86,11 +86,11 @@
               (.add (seesaw.core/to-widget (~content ~applet)) java.awt.BorderLayout/CENTER)
               (.. getContentPane revalidate repaint)))))
 
-      (defn ~'-seesaw-applet-start [#^JApplet ~applet]
-        (seesaw.core/invoke-later 
+       (defn ~'-seesaw-applet-start [#^JApplet ~applet]
+         (seesaw.core/invoke-later
           (~start ~applet)))
 
-      (defn ~'-seesaw-applet-stop [#^JApplet ~applet]
-        (seesaw.core/invoke-later 
+       (defn ~'-seesaw-applet-stop [#^JApplet ~applet]
+         (seesaw.core/invoke-later
           (~stop ~applet))))))
 

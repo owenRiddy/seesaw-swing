@@ -15,17 +15,17 @@
 (def num-octaves 7)
 (def piano-key-info
   (map
-    (fn [index octave note offset color]
-      {:index index
-       :note  note
-       :midi (+ 21 index)
-       :color color
-       :x-pos (+ offset (* 7 octave))})
-    (range)
-    (mapcat #(repeat 12 %) (range num-octaves))
-    (cycle [:A :A# :B :C :C# :D :D# :E :F :F# :G :G#])
-    (cycle [0  0.75 1  2  2.75 3  3.75 4  5  5.75 6  6.75])
-    (cycle [:w :b  :w :w :b  :w :b  :w :w :b  :w :b])))
+   (fn [index octave note offset color]
+     {:index index
+      :note  note
+      :midi (+ 21 index)
+      :color color
+      :x-pos (+ offset (* 7 octave))})
+   (range)
+   (mapcat #(repeat 12 %) (range num-octaves))
+   (cycle [:A :A# :B :C :C# :D :D# :E :F :F# :G :G#])
+   (cycle [0  0.75 1  2  2.75 3  3.75 4  5  5.75 6  6.75])
+   (cycle [:w :b  :w :w :b  :w :b  :w :w :b  :w :b])))
 
 (defn make-piano-key
   [{:keys [index note midi x-pos color] :as info}]
@@ -58,27 +58,27 @@
 
 (defn make-piano []
   (xyz-panel
-    :id :piano
-    :items (map make-piano-key piano-key-info)
-    :listen [:component-resized layout-piano-keys]))
+   :id :piano
+   :items (map make-piano-key piano-key-info)
+   :listen [:component-resized layout-piano-keys]))
 
 (defn add-behaviors [root]
   (doseq [k (select root [:.piano-key])]
     (listen k
-      :mouse-pressed (fn [e]
-                       (let [{:keys [note midi]} (user-data e)]
-                         (println "You hit " note "/" midi)))))
+            :mouse-pressed (fn [e]
+                             (let [{:keys [note midi]} (user-data e)]
+                               (println "You hit " note "/" midi)))))
   root)
 
 (defexample []
   (-> (frame
-        :title   "Seesaw piano example"
-        :content (border-panel
-                   :vgap 5
-                   :north "Make a piano out of widgets - clicks go to console"
-                   :center (make-piano))
-        :size    [900 :by 100])
-    add-behaviors))
+       :title   "Seesaw piano example"
+       :content (border-panel
+                 :vgap 5
+                 :north "Make a piano out of widgets - clicks go to console"
+                 :center (make-piano))
+       :size    [900 :by 100])
+      add-behaviors))
 
 ;(run :dispose)
 

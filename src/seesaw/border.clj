@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for creating widget borders."
       :author "Dave Ray"}
-  seesaw.border
+ seesaw.border
   (:use [seesaw.color :only [to-color]]
         [seesaw.util  :only [to-insets resource resource-key?]])
   (:import [javax.swing BorderFactory]
@@ -22,7 +22,7 @@
 
 (declare to-border)
 
-(defn empty-border 
+(defn empty-border
   "Create an empty border. The following properties are supported:
   
     :thickness The thickness of the border (all sides) in pixels. This property
@@ -47,7 +47,7 @@
     (let [t (or thickness 1)]
       (BorderFactory/createEmptyBorder t t t t))))
 
-(defn line-border 
+(defn line-border
   "Create a colored border with following properties:
   
     :color The color, passed through (seesaw.color/to-color). Defaults to black.
@@ -65,9 +65,9 @@
   "
   [& {:keys [color thickness top left bottom right] :or {thickness 1 color Color/BLACK}}]
   (if (or top left bottom right)
-    (BorderFactory/createMatteBorder 
-      (int (or top 0)) (int (or left 0)) (int (or bottom 0)) (int (or right 0)) 
-      ^Color (to-color color))
+    (BorderFactory/createMatteBorder
+     (int (or top 0)) (int (or left 0)) (int (or bottom 0)) (int (or right 0))
+     ^Color (to-color color))
     (BorderFactory/createLineBorder (to-color color) thickness)))
 
 (defn compound-border
@@ -86,7 +86,7 @@
   ([b0 b1] (BorderFactory/createCompoundBorder (to-border b1) (to-border b0)))
   ([b0 b1 & more] (reduce #(compound-border %1 %2) (compound-border b0 b1) more)))
 
-(defn custom-border 
+(defn custom-border
   "Define a custom border with the following properties:
   
     :paint A function that takes the same arguments as Border.paintBorder:
@@ -110,12 +110,12 @@
   "
   [& args]
   (let [{:keys [insets opaque? paint]} args
-        insets (cond 
+        insets (cond
                  (fn? insets) insets
                  :else (constantly insets))
         opaque? (cond
                   (fn? opaque?) opaque?
-                  :else (constantly opaque?))] 
+                  :else (constantly opaque?))]
     (reify javax.swing.border.Border
       (getBorderInsets [this c]
         (to-insets (insets c)))
@@ -144,14 +144,14 @@
   to-border is used implicitly by the :border option supported by all widgets
   to it is rarely necessary to call directly.
   "
-  ([b] 
-    (cond
-      (nil? b)             nil
-      (instance? Border b) b
-      (integer? b)         (empty-border :thickness b)
-      (coll? b)            (apply to-border b)
-      (resource-key? b)    (to-border (resource b))
-      :else                (BorderFactory/createTitledBorder (str b))))
+  ([b]
+   (cond
+     (nil? b)             nil
+     (instance? Border b) b
+     (integer? b)         (empty-border :thickness b)
+     (coll? b)            (apply to-border b)
+     (resource-key? b)    (to-border (resource b))
+     :else                (BorderFactory/createTitledBorder (str b))))
   ([b & args]
-    (apply compound-border b args)))
+   (apply compound-border b args)))
 

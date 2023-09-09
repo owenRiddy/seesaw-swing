@@ -14,14 +14,14 @@
         seesaw.test.examples.example))
 
 (defexample []
-  (frame 
-    :size [400 :by 400]
-    :content (label :text "I have a custom border"
-                    :border (custom-border :insets 10 
-                                           :paint (fn [c g x y w h]
-                                                    (doto g
-                                                      (.setColor java.awt.Color/RED)
-                                                      (.drawRoundRect (+ 5 x) (+ 5 y) (- w 10) (- h 10) 15 15)))))))
+  (frame
+   :size [400 :by 400]
+   :content (label :text "I have a custom border"
+                   :border (custom-border :insets 10
+                                          :paint (fn [c g x y w h]
+                                                   (doto g
+                                                     (.setColor java.awt.Color/RED)
+                                                     (.drawRoundRect (+ 5 x) (+ 5 y) (- w 10) (- h 10) 15 15)))))))
 
 ;(run :dispose)
 

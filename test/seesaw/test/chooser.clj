@@ -14,6 +14,6 @@
         [lazytest.expect :only (expect)]))
 
 (describe file-filter
-  (it "should create a FileFilter"
-    (instance? javax.swing.filechooser.FileFilter
-               (file-filter "All files" (constantly true)))))
+          (it "should create a FileFilter"
+              (instance? javax.swing.filechooser.FileFilter
+                         (file-filter "All files" (constantly true)))))

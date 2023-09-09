@@ -16,13 +16,12 @@
 
 (defn make-table []
   (table :id :table
-    :model [
-      :columns [ { :key :name :text "Name" } 
-                 { :key :town :text "Town" } 
-                 { :key :interest :text "Interest" }]
-      :rows [{ :name "Kupzog" :town "Cologne" :interest "programming" :id 1234}
-             { :name "Hansson" :town "Ystadt" :interest "Hunting" :id 2234}
-             { :name "Walter" :town "London" :interest "Rafting" :id 12345}]]))
+         :model [:columns [{:key :name :text "Name"}
+                           {:key :town :text "Town"}
+                           {:key :interest :text "Interest"}]
+                 :rows [{:name "Kupzog" :town "Cologne" :interest "programming" :id 1234}
+                        {:name "Hansson" :town "Ystadt" :interest "Hunting" :id 2234}
+                        {:name "Walter" :town "London" :interest "Rafting" :id 12345}]]))
 
 ; Note that the :id key isn't in the :columns spec, but it is still retained
 ; behind the scenes by the table model.
@@ -30,21 +29,21 @@
 ; The rest is boilerplate ...
 (defn make-frame []
   (frame :title "JTable Example" :width 500 :height 400 :content
-    (border-panel
-      :center (scrollable (make-table))
-      :south  (label :id :sel :text "Selection: "))))
+         (border-panel
+          :center (scrollable (make-table))
+          :south  (label :id :sel :text "Selection: "))))
 
 (defexample []
   (let [f (show! (make-frame))
         t (select f [:#table])]
     ; Listen for selection changes and show them in the label
-    (listen t :selection 
-      (fn [e] 
-        (config! (select f [:#sel]) 
-          :text (str "Selection: " 
+    (listen t :selection
+            (fn [e]
+              (config! (select f [:#sel])
+                       :text (str "Selection: "
                      ; (selection t) returns the selected row index
                      ; (value-at t row) returns the record at row
-                     (value-at t (selection t))))))
+                                  (value-at t (selection t))))))
     f))
 
 ;(run :dispose)

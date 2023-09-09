@@ -22,21 +22,21 @@
 
 (defn make-frame []
   (frame
-    :title "Log Window Example"
-    :size [640 :by 480]
-    :content (border-panel
-               :center (scrollable (log-window :id :log-window
-                                               :limit nil))
-               :south (horizontal-panel 
-                        :items [(button :id :start :text "Start Spammer")
-                                (button :id :stop :text "Stop")
-                                (checkbox :id :limit? :text "Limit to")
-                                (spinner :id :limit 
-                                         :model (spinner-model 500 :from 1 :to nil :by 1))
-                                "chars"]))))
+   :title "Log Window Example"
+   :size [640 :by 480]
+   :content (border-panel
+             :center (scrollable (log-window :id :log-window
+                                             :limit nil))
+             :south (horizontal-panel
+                     :items [(button :id :start :text "Start Spammer")
+                             (button :id :stop :text "Stop")
+                             (checkbox :id :limit? :text "Limit to")
+                             (spinner :id :limit
+                                      :model (spinner-model 500 :from 1 :to nil :by 1))
+                             "chars"]))))
 
 (defn spammer [lw prefix go]
-  (loop [i 0] 
+  (loop [i 0]
     (log lw (str prefix " - " i " asdf asdf asdf asdf asdf asdf\n"))
     (Thread/sleep 100)
     (if @go
@@ -46,20 +46,20 @@
   (let [{:keys [log-window start stop limit limit?]} (group-by-id f)
         go (atom false)]
     (listen
-      limit?
-      :selection (fn [_] (config! log-window :limit (if (value limit?) 
-                                              (value limit)))))
+     limit?
+     :selection (fn [_] (config! log-window :limit (if (value limit?)
+                                                     (value limit)))))
     (listen
-      stop
-      :action (fn [_] (reset! go false)))
-    (listen 
-      start 
-      :action (fn [_] 
-                (reset! go true)
-                (future (spammer log-window (System/currentTimeMillis) go)))))
+     stop
+     :action (fn [_] (reset! go false)))
+    (listen
+     start
+     :action (fn [_]
+               (reset! go true)
+               (future (spammer log-window (System/currentTimeMillis) go)))))
   f)
 
 (defexample []
   (-> (make-frame)
-    add-behaviors))
+      add-behaviors))
 ;(run :dispose)

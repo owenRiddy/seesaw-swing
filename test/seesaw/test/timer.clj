@@ -15,18 +15,18 @@
   (:import [javax.swing Action]))
 
 (describe timer
-  (it "Creates a timer for a handler function and calls it"
-    (let [called (atom nil)
-          t (timer #(inc (reset! called %)) :start? false :initial-value 99)]
-      (.actionPerformed (first (.getActionListeners t)) nil)
-      (expect (= 99 @called))
-      (.actionPerformed (first (.getActionListeners t)) nil)
-      (expect (= 100 @called))))
+          (it "Creates a timer for a handler function and calls it"
+              (let [called (atom nil)
+                    t (timer #(inc (reset! called %)) :start? false :initial-value 99)]
+                (.actionPerformed (first (.getActionListeners t)) nil)
+                (expect (= 99 @called))
+                (.actionPerformed (first (.getActionListeners t)) nil)
+                (expect (= 100 @called))))
 
-  (it "Sets timer properties"
-    (let [t (timer identity :start? false :initial-delay 123 :delay 456 :repeats? false)]
-      (expect (= 123 (.getInitialDelay t)))
-      (expect (= 456 (.getDelay t)))
-      (expect (not (.isRunning t)))
-      (expect (not (.isRepeats t))))))
+          (it "Sets timer properties"
+              (let [t (timer identity :start? false :initial-delay 123 :delay 456 :repeats? false)]
+                (expect (= 123 (.getInitialDelay t)))
+                (expect (= 456 (.getDelay t)))
+                (expect (not (.isRunning t)))
+                (expect (not (.isRepeats t))))))
 

@@ -20,10 +20,10 @@
          :width  400
          :height 400
          ;:undecorated? true
-         :content (vertical-panel 
-                    :items ["A demo of (seesaw.core/toggle-full-screen!)."
-                            (button :id :toggle :text "Toggle full screen")
-                            (button :id :close :text "Close")])))
+         :content (vertical-panel
+                   :items ["A demo of (seesaw.core/toggle-full-screen!)."
+                           (button :id :toggle :text "Toggle full screen")
+                           (button :id :close :text "Close")])))
 
 (defn add-behaviors [root]
   (listen (select root [:#toggle]) :action (fn [e] (toggle-full-screen! root)))
@@ -32,8 +32,8 @@
 
 (defexample []
   (-> (make-frame)
-    add-behaviors
-    show!))
+      add-behaviors
+      show!))
 
 ;(run :dispose)
 

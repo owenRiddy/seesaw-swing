@@ -11,7 +11,7 @@
 (ns ^{:doc "Functions for handling fonts. Note that most core widget functions
             use these implicitly through the :font option."
       :author "Dave Ray"}
-  seesaw.font
+ seesaw.font
   (:use [seesaw.util :only [constant-map resource resource-key?]])
   (:import [java.awt Font GraphicsEnvironment]))
 
@@ -25,9 +25,9 @@
   "
   ([] (font-families nil))
   ([locale]
-    (-> (GraphicsEnvironment/getLocalGraphicsEnvironment) 
-      (.getAvailableFontFamilyNames locale)
-      seq)))
+   (-> (GraphicsEnvironment/getLocalGraphicsEnvironment)
+       (.getAvailableFontFamilyNames locale)
+       seq)))
 
 (def ^{:private true} style-table (constant-map Font :bold :plain :italic))
 (defn- get-style-mask [v]
@@ -107,5 +107,5 @@
     (nil? f) nil
     (instance? Font f) f
     (map? f) (apply font (flatten (seq f)))
-    true (font f))) 
-    
+    true (font f)))
+

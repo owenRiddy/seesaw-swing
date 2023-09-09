@@ -64,18 +64,18 @@
 
 (defn make-frame []
   (frame
-    :title "Seesaw Example Launcher"
-    :size [200 :by 500]
-    :content
-      (border-panel
-        :hgap 5 :vgap 5 :border 5
-        :center (scrollable (listbox-x
-                              :id :list
-                              :model examples
-                              :selection-mode :single
-                              :highlighters [(hl-simple-striping)
-                                            ((hl-color :background "#88F") :rollover-row)]))
-        :south  (button :id :launch :text "Launch"))))
+   :title "Seesaw Example Launcher"
+   :size [200 :by 500]
+   :content
+   (border-panel
+    :hgap 5 :vgap 5 :border 5
+    :center (scrollable (listbox-x
+                         :id :list
+                         :model examples
+                         :selection-mode :single
+                         :highlighters [(hl-simple-striping)
+                                        ((hl-color :background "#88F") :rollover-row)]))
+    :south  (button :id :launch :text "Launch"))))
 
 (defn launch-example [s]
   (let [example-ns (str "seesaw.test.examples." s)
@@ -88,8 +88,8 @@
 (defn add-behaviors [f]
   (let [{:keys [list launch]} (group-by-id f)]
     (b/bind
-      (b/selection list)
-      (b/property launch :enabled?))
+     (b/selection list)
+     (b/property launch :enabled?))
 
     (listen list :mouse-clicked
             (fn [e]
@@ -106,7 +106,7 @@
 (defexample []
   (dev/debug!)
   (-> (make-frame)
-    add-behaviors))
+      add-behaviors))
 
 ;(run :dispose)
 

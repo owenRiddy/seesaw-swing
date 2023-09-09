@@ -17,10 +17,10 @@
 (defn make-editor-pane
   []
   (editor-pane
-    :id :editor
-    :content-type "text/html"
-    :editable? false
-    :text "<html>
+   :id :editor
+   :content-type "text/html"
+   :editable? false
+   :text "<html>
           You can click a link and get an event:
           <ul>
           <li><a href='apple'>Apple</a></li>
@@ -35,17 +35,17 @@
   [root]
   (let [editor (select root [:#editor])]
     (listen editor :hyperlink
-      (fn [e]
-        (when (= HyperlinkEvent$EventType/ACTIVATED (.getEventType e))
-          (alert e (str "Clicked: " (.getDescription e)))))))
+            (fn [e]
+              (when (= HyperlinkEvent$EventType/ACTIVATED (.getEventType e))
+                (alert e (str "Clicked: " (.getDescription e)))))))
   root)
 
 (defexample []
   (->
-    (frame
-      :title "Editor Pane Hyperlinks"
-      :content (make-editor-pane))
-    add-behaviors))
+   (frame
+    :title "Editor Pane Hyperlinks"
+    :content (make-editor-pane))
+   add-behaviors))
 
 ;(run :dispose)
 

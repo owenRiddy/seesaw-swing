@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for associating metadata with frames and widgets, etc."
       :author "Dave Ray"}
-  seesaw.meta)
+ seesaw.meta)
 
 (defprotocol Meta
   (put-meta! [this key value])
@@ -20,21 +20,21 @@
 
 (extend-protocol Meta
   Object
-    (put-meta! [this key value]
-      (if-let [this-map (.get ^java.util.Map meta-map this)]
-        (.put ^java.util.Map this-map key value)
-        (.put ^java.util.Map meta-map this (doto (java.util.HashMap.)
-                                             (.put key value))))
-      this)
-    (get-meta  [this key]
-      (when-let [this-map (.get ^java.util.Map meta-map this)]
-        (.get ^java.util.Map this-map key)))
+  (put-meta! [this key value]
+    (if-let [this-map (.get ^java.util.Map meta-map this)]
+      (.put ^java.util.Map this-map key value)
+      (.put ^java.util.Map meta-map this (doto (java.util.HashMap.)
+                                           (.put key value))))
+    this)
+  (get-meta  [this key]
+    (when-let [this-map (.get ^java.util.Map meta-map this)]
+      (.get ^java.util.Map this-map key)))
 
   javax.swing.JComponent
-    (put-meta! [this key value] (doto this (.putClientProperty key value)))
-    (get-meta  [this key] (.getClientProperty this key))
+  (put-meta! [this key value] (doto this (.putClientProperty key value)))
+  (get-meta  [this key] (.getClientProperty this key))
   javax.swing.Action
-    (put-meta! [this key value] (doto this (.putValue (str key) value)))
-    (get-meta  [this key] (.getValue this (str key))))
+  (put-meta! [this key value] (doto this (.putValue (str key) value)))
+  (get-meta  [this key] (.getValue this (str key))))
 
 

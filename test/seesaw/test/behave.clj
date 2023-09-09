@@ -15,11 +15,11 @@
         [lazytest.expect :only (expect)]))
 
 (describe when-focused-select-all
-  (it "causes all text in a text field to be selected when it gains focus"
-    (let [t (text "Hi there")
-          remove-fn (when-focused-select-all t)]
+          (it "causes all text in a text field to be selected when it gains focus"
+              (let [t (text "Hi there")
+                    remove-fn (when-focused-select-all t)]
       ; Simulate focus gained :(
-      (doseq [l (.getFocusListeners t)]
-        (.focusGained l (java.awt.event.FocusEvent. t java.awt.event.FocusEvent/FOCUS_GAINED)))
-      (expect (= "Hi there" (.getSelectedText t))))))
+                (doseq [l (.getFocusListeners t)]
+                  (.focusGained l (java.awt.event.FocusEvent. t java.awt.event.FocusEvent/FOCUS_GAINED)))
+                (expect (= "Hi there" (.getSelectedText t))))))
 

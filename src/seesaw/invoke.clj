@@ -15,19 +15,19 @@
 
 (defn invoke-now* [f & args]
   (let [result (atom nil)]
-   (letfn [(invoker [] (reset! result (apply f args)))]
-     (if (SwingUtilities/isEventDispatchThread)
-       (invoker)
-       (SwingUtilities/invokeAndWait invoker))
-     @result)))
+    (letfn [(invoker [] (reset! result (apply f args)))]
+      (if (SwingUtilities/isEventDispatchThread)
+        (invoker)
+        (SwingUtilities/invokeAndWait invoker))
+      @result)))
 
-(defn invoke-soon* 
+(defn invoke-soon*
   [f & args]
   (if (SwingUtilities/isEventDispatchThread)
     (apply f args)
     (apply invoke-later* f args)))
 
-(defmacro invoke-later 
+(defmacro invoke-later
   "Equivalent to SwingUtilities/invokeLater. Executes the given body sometime
   in the future on the Swing UI thread. For example,
 
@@ -78,7 +78,7 @@
   "
   [& body] `(invoke-soon* (fn [] ~@body)))
 
-(defn signaller* 
+(defn signaller*
   "Returns a function that conditionally queues the given function (+ args) on 
   the UI thread. The call is only queued if there is not already a pending call
   queued. 
@@ -124,12 +124,12 @@
     (fn [& args]
       (let [do-it (compare-and-set! active? false true)]
         (when do-it
-          (invoke-later 
-            (apply f args) 
-            (reset! active? false)))
+          (invoke-later
+           (apply f args)
+           (reset! active? false)))
         do-it))))
 
-(defmacro signaller 
+(defmacro signaller
   "Convenience form of (seesaw.invoke/signaller*).
   
   A use of signaller* like this:

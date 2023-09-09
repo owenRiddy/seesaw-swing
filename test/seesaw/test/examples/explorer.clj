@@ -17,9 +17,9 @@
 ; Make a model for the directory tree
 (def tree-model
   (simple-tree-model
-    #(.isDirectory %)
-    (fn [f] (filter #(.isDirectory %) (.listFiles f)))
-    (File. ".")))
+   #(.isDirectory %)
+   (fn [f] (filter #(.isDirectory %) (.listFiles f)))
+   (File. ".")))
 
 (def chooser (javax.swing.JFileChooser.)) ; FileChooser hack to get system icons
 
@@ -27,32 +27,32 @@
 (defn render-file-item
   [renderer {:keys [value]}]
   (config! renderer :text (.getName value)
-                   :icon (.getIcon chooser value)))
+           :icon (.getIcon chooser value)))
 
 (defn make-frame []
   ; Put all the widgets together
-  (frame :title "File Explorer" :width 500 :height 500 
-    :content
-    (border-panel :border 5 :hgap 5 :vgap 5
-      :north  (label :id :current-dir :text "Location")
+  (frame :title "File Explorer" :width 500 :height 500
+         :content
+         (border-panel :border 5 :hgap 5 :vgap 5
+                       :north  (label :id :current-dir :text "Location")
 
-      :center (left-right-split
-                (scrollable (tree    :id :tree :model tree-model :renderer render-file-item))
-                (scrollable (listbox :id :list :renderer render-file-item))
-                :divider-location 1/3)
+                       :center (left-right-split
+                                (scrollable (tree    :id :tree :model tree-model :renderer render-file-item))
+                                (scrollable (listbox :id :list :renderer render-file-item))
+                                :divider-location 1/3)
 
-      :south  (label :id :status :text "Ready"))))
+                       :south  (label :id :status :text "Ready"))))
 
 (defexample []
   (let [f (make-frame)]
     ; Hook up a selection listener to the tree to update stuff
     (listen (select f [:#tree]) :selection
-      (fn [e]
-        (if-let [dir (last (selection e))]
-          (let [files (.listFiles dir)]
-            (config! (select f [:#current-dir]) :text (.getAbsolutePath dir))
-            (config! (select f [:#status]) :text (format "Ready (%d items)" (count files)))
-            (config! (select f [:#list]) :model files)))))
+            (fn [e]
+              (if-let [dir (last (selection e))]
+                (let [files (.listFiles dir)]
+                  (config! (select f [:#current-dir]) :text (.getAbsolutePath dir))
+                  (config! (select f [:#status]) :text (format "Ready (%d items)" (count files)))
+                  (config! (select f [:#list]) :model files)))))
     f))
 
 ;(run :dispose)

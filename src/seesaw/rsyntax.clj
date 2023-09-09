@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Support for RSyntaxTextArea: http://fifesoft.com/rsyntaxtextarea/index.php"
       :author "Dave Ray"}
-  seesaw.rsyntax
+ seesaw.rsyntax
   (:require [seesaw.core :as core]
             [seesaw.util :as util]
             [seesaw.options :as options]
@@ -28,18 +28,18 @@
 
 (def text-area-options
   (merge
-    core/text-area-options
-    (options/option-map
-      (options/bean-option
-        [:syntax :syntax-editing-style]
-        org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
-        syntax-table
-        nil
-        (keys syntax-table)))))
+   core/text-area-options
+   (options/option-map
+    (options/bean-option
+     [:syntax :syntax-editing-style]
+     org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
+     syntax-table
+     nil
+     (keys syntax-table)))))
 
 (widget-options/widget-option-provider
-  org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
-  text-area-options)
+ org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
+ text-area-options)
 
 (defn text-area
   "Create a new RSyntaxTextArea.

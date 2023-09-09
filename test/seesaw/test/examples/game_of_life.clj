@@ -39,7 +39,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Cell file reading 
 
-(defn load-cell-file 
+(defn load-cell-file
   "Parse a cell file from  http://www.bitstorm.org/gameoflife/lexicon/cells/
 
     !Name: T-nosed_p4
@@ -59,17 +59,17 @@
   "
   [readerable]
   (with-open [r (jio/reader readerable)]
-    (let [lines (line-seq r) 
+    (let [lines (line-seq r)
           name (first lines)
           grid (drop 2 lines)]
       (->> grid
-        (map-indexed (fn [y s] 
-                       (map-indexed (fn [x c] 
-                                      (if (= \O c) [x y])) 
-                                    s)))
-        (apply concat)
-        (filter identity)
-        (into #{})))))
+           (map-indexed (fn [y s]
+                          (map-indexed (fn [x c]
+                                         (if (= \O c) [x y]))
+                                       s)))
+           (apply concat)
+           (filter identity)
+           (into #{})))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; UI
@@ -95,46 +95,46 @@
                                  (not= (even? x) (even? y)) "#323232"))))))
 
 (defn make-ui []
-  (frame 
-    :title "Game of Life" 
-    :size [300 :by 300]
-    :content (border-panel
-               :border 5 :hgap 5 :vgap 5
-               :north  "Drag and Drop .cell file URLs on this window"
-               :center (canvas :id :canvas 
-                               :background :black
-                               :border (line-border :thickness 2 :color :black))
-               :east   (slider :id :size 
-                               :min 8 
-                               :max 256 
-                               :value 32 
-                               :orientation :vertical
-                               :tip "Adjust grid size")
-               :south  (toolbar :floatable? false 
-                                :items [(label :id :link
-                                               :tip "Open cell file library in browser"
-                                               :text "Cell file library"
-                                               :foreground :blue
-                                               :cursor :hand)
-                                        :separator
-                                        "Period (ms) " (spinner 
-                                                          :id :period 
-                                                          :model (spinner-model 250 :from 50 :to 1000 :by 25))]))))
+  (frame
+   :title "Game of Life"
+   :size [300 :by 300]
+   :content (border-panel
+             :border 5 :hgap 5 :vgap 5
+             :north  "Drag and Drop .cell file URLs on this window"
+             :center (canvas :id :canvas
+                             :background :black
+                             :border (line-border :thickness 2 :color :black))
+             :east   (slider :id :size
+                             :min 8
+                             :max 256
+                             :value 32
+                             :orientation :vertical
+                             :tip "Adjust grid size")
+             :south  (toolbar :floatable? false
+                              :items [(label :id :link
+                                             :tip "Open cell file library in browser"
+                                             :text "Cell file library"
+                                             :foreground :blue
+                                             :cursor :hand)
+                                      :separator
+                                      "Period (ms) " (spinner
+                                                      :id :period
+                                                      :model (spinner-model 250 :from 50 :to 1000 :by 25))]))))
 
 (defn add-behaviors [root]
   (let [c      (select root [:#canvas])
-        t      (timer (fn [_] 
-                        (swap! worlds #(drop 1 %)) 
+        t      (timer (fn [_]
+                        (swap! worlds #(drop 1 %))
                         (repaint! c))
                       :delay 250
                       :start? true)
         bounds (atom [0 0 32 32])
-        drop-fn (fn [{:keys [data]}] (reset (load-cell-file (first data))))] 
+        drop-fn (fn [{:keys [data]}] (reset (load-cell-file (first data))))]
 
     ; Handle dropped uris and files
     (config! root :transfer-handler [:import [dnd/uri-list-flavor  drop-fn
                                               dnd/file-list-flavor drop-fn]])
-    
+
     ; Draw the grid using current bounds
     (config! c :paint #(draw-grid %1 %2 @bounds (first @worlds)))
 
@@ -143,23 +143,23 @@
 
     ; Resize the grid when the size slider changes
     (b/bind
-      (b/selection (select root [:#size]))
-      (b/b-swap! bounds #(vector (first %1) (second %1) %2 %2)))
+     (b/selection (select root [:#size]))
+     (b/b-swap! bounds #(vector (first %1) (second %1) %2 %2)))
 
     ; Make a fake link
     (listen (select root [:#link])
-      :mouse-clicked (fn [_] 
-                       (.. (java.awt.Desktop/getDesktop) (browse (java.net.URI. "http://www.bitstorm.org/gameoflife/lexicon/cells/")))))
+            :mouse-clicked (fn [_]
+                             (.. (java.awt.Desktop/getDesktop) (browse (java.net.URI. "http://www.bitstorm.org/gameoflife/lexicon/cells/")))))
 
     ; When the period changes, adjust the timer
-    (listen (select root [:#period]) :selection 
-      (fn [e] (.setDelay t (selection e)))) 
+    (listen (select root [:#period]) :selection
+            (fn [e] (.setDelay t (selection e))))
 
     ; When mouse is dragged, pan the grid (kinda crappy due to scaling)
     (when-mouse-dragged c
-      :drag (fn [e [dx dy]]
-              (swap! bounds (fn [[x0 y0 x1 y1]] 
-                              [(- x0 dx) (- y0 dy) (- x1 dx) (- y1 dy)])))))
+                        :drag (fn [e [dx dy]]
+                                (swap! bounds (fn [[x0 y0 x1 y1]]
+                                                [(- x0 dx) (- y0 dy) (- x1 dx) (- y1 dy)])))))
 
   root)
 

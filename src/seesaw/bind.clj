@@ -11,7 +11,7 @@
 (ns ^{:doc "Functions for binding the value of one thing to another, for example
            synchronizing an atom with changes to a slider."
       :author "Dave Ray"}
-  seesaw.bind
+ seesaw.bind
   (:refer-clojure :exclude [some filter])
   (:require [seesaw.core :as ssc]
             [seesaw.invoke :as invoke])
@@ -37,14 +37,14 @@
     target
     (to-bindable* target)))
 
-(defn composite 
+(defn composite
   "Create a composite bindable from the start and end of a binding chain"
   [start end]
   (reify Bindable
     (subscribe [this handler] (subscribe end handler))
     (notify [this v] (notify start v))))
 
-(defn bind 
+(defn bind
   "Chains together two or more bindables into a listening chain.
   When the value of source changes it is passed along and updates 
   the value of target and so on.
@@ -81,21 +81,21 @@
     Circular bindings will usually work.
   "
   [first-source target & more]
-  (loop [source (to-bindable first-source) 
-         target (to-bindable target) 
+  (loop [source (to-bindable first-source)
+         target (to-bindable target)
          more   (seq more)
          unsubs []]
     (let [unsub (subscribe source #(notify target %))
           unsubs (conj unsubs unsub)]
       (if more
         (recur target (to-bindable (first more)) (next more) unsubs)
-        (reify 
+        (reify
           Bindable
-            (subscribe [this handler] (subscribe target handler))
-            (notify [this v] (notify first-source v))
+          (subscribe [this handler] (subscribe target handler))
+          (notify [this v] (notify first-source v))
           clojure.lang.IFn
-            (invoke [this]
-              (doseq [f unsubs] (f))))))))
+          (invoke [this]
+            (doseq [f unsubs] (f))))))))
 
 (defn funnel
   "Create a binding chain with several input chains. Provides a
@@ -131,22 +131,22 @@
 
 (extend-protocol Bindable
   clojure.lang.Atom
-    (subscribe [this handler]
-      (let [key (keyword (gensym "bindable-atom-watcher"))]
-        (add-watch this key
-          (fn bindable-atom-watcher
-            [k r o n] (when-not (= o n) (handler n))))
-        (fn [] (remove-watch this key))))
-    (notify [this v] (reset! this v))
+  (subscribe [this handler]
+    (let [key (keyword (gensym "bindable-atom-watcher"))]
+      (add-watch this key
+                 (fn bindable-atom-watcher
+                   [k r o n] (when-not (= o n) (handler n))))
+      (fn [] (remove-watch this key))))
+  (notify [this v] (reset! this v))
 
   clojure.lang.Agent
-    (subscribe [this handler]
-      (let [key (keyword (gensym "bindable-agent-watcher"))] 
-        (add-watch this key 
-                   (fn bindable-agent-watcher
-                     [k r o n] (when-not (= o n) (handler n))))
-        (fn [] (remove-watch this key))))
-    (notify [this v] (throw (IllegalStateException. "Can't notify an agent!")))
+  (subscribe [this handler]
+    (let [key (keyword (gensym "bindable-agent-watcher"))]
+      (add-watch this key
+                 (fn bindable-agent-watcher
+                   [k r o n] (when-not (= o n) (handler n))))
+      (fn [] (remove-watch this key))))
+  (notify [this v] (throw (IllegalStateException. "Can't notify an agent!")))
 
   clojure.lang.Ref
   (subscribe [this handler]
@@ -158,40 +158,40 @@
   (notify [this v] (dosync (ref-set this v)))
 
   javax.swing.text.Document
-    (subscribe [this handler]
-      (ssc/listen this :document
-        (fn [e] (handler (get-document-text this)))))
-    (notify [this v] 
-      (when-not (= v (get-document-text this))
-        (do
-          (.remove this 0 (.getLength this))
-          (.insertString this 0 (str v) nil))))
+  (subscribe [this handler]
+    (ssc/listen this :document
+                (fn [e] (handler (get-document-text this)))))
+  (notify [this v]
+    (when-not (= v (get-document-text this))
+      (do
+        (.remove this 0 (.getLength this))
+        (.insertString this 0 (str v) nil))))
 
   javax.swing.SpinnerModel
-    (subscribe [this handler]
-      (ssc/listen this :change
-        (fn [e] (handler (.getValue this)))))
-    (notify [this v] 
-      (when-not (= v (.getValue this)) 
-        (.setValue this v))) 
-  
-  javax.swing.BoundedRangeModel
-    (subscribe [this handler]
-      (ssc/listen this :change
-        (fn [e] (handler (.getValue this)))))
-    (notify [this v] 
-      (when-not (= (int v) (.getValue this)) 
-        (.setValue this v)))
-  
-  javax.swing.JComboBox
-    (subscribe [this handler]
-      (ssc/listen this :action
-        (fn [e] (handler (.getSelectedItem this)))))
-    (notify [this v] 
-      (when-not (= v (.getSelectedItem this)) 
-        (.setSelectedItem this v))))
+  (subscribe [this handler]
+    (ssc/listen this :change
+                (fn [e] (handler (.getValue this)))))
+  (notify [this v]
+    (when-not (= v (.getValue this))
+      (.setValue this v)))
 
-(defn b-swap! 
+  javax.swing.BoundedRangeModel
+  (subscribe [this handler]
+    (ssc/listen this :change
+                (fn [e] (handler (.getValue this)))))
+  (notify [this v]
+    (when-not (= (int v) (.getValue this))
+      (.setValue this v)))
+
+  javax.swing.JComboBox
+  (subscribe [this handler]
+    (ssc/listen this :action
+                (fn [e] (handler (.getSelectedItem this)))))
+  (notify [this v]
+    (when-not (= v (.getSelectedItem this))
+      (.setSelectedItem this v))))
+
+(defn b-swap!
   "Creates a bindable that swaps! an atom's value using the given function each
   time its input changes. That is, each time a new value comes in, 
   (apply swap! atom f new-value args) is called.
@@ -205,17 +205,17 @@
   "
   [atom f & args]
   (reify Bindable
-    (subscribe [this handler] 
+    (subscribe [this handler]
       (subscribe atom handler))
-    (notify [this v] 
+    (notify [this v]
       (apply swap! atom f v args))))
 
 (defn- b-send*
   [send-fn agent f & args]
   (reify Bindable
-    (subscribe [this handler] 
+    (subscribe [this handler]
       (subscribe agent handler))
-    (notify [this v] 
+    (notify [this v]
       (apply send-fn agent f v args))))
 
 (defn b-send
@@ -233,7 +233,7 @@
   [agent f & args]
   (apply b-send* send agent f args))
 
-(defn b-send-off 
+(defn b-send-off
   "Creates a bindable that (send-off)s to an agent using the given function each
   time its input changes. That is, each time a new value comes in, 
   (apply send agent f new-value args) is called.
@@ -249,27 +249,25 @@
   (apply b-send* send-off agent f args))
 
 (def ^{:private true} short-property-keywords-to-long-map
-     {:min :minimum
-      :max :maximum
-      :tip :tool-tip-text})
+  {:min :minimum
+   :max :maximum
+   :tip :tool-tip-text})
 
 ;; by default, property names' first character will be lowercased when
 ;; added using a property change listener. For some however, the first
 ;; character must stay uppercased. This map will specify those exceptions.
-(def ^{:private true} property-change-listener-name-overrides {
-  "ToolTipText" "ToolTipText"
-})
+(def ^{:private true} property-change-listener-name-overrides {"ToolTipText" "ToolTipText"})
 
 (defn- property-kw->java-name
   "(property-kw->java-name :tip) -> \"ToolTipText\""
   [kw]
   (apply str
-          (map capitalize (split (-> (short-property-keywords-to-long-map kw kw)
-                                     name
-                                     (.replace "?" ""))
-                                 #"\-"))))
+         (map capitalize (split (-> (short-property-keywords-to-long-map kw kw)
+                                    name
+                                    (.replace "?" ""))
+                                #"\-"))))
 
-(defn property 
+(defn property
   "Returns a bindable (suitable to pass to seesaw.bind/bind) that
   connects to a property of a widget, e.g. :foreground, :enabled?,
   etc.
@@ -290,15 +288,15 @@
   "
   [^java.awt.Component target property-name]
   (reify Bindable
-    (subscribe [this handler] 
+    (subscribe [this handler]
       (let [property-name (property-kw->java-name property-name)
           ; first letter of *some* property-names must be lower-case
             property-name (property-change-listener-name-overrides
-                            property-name
-                            (apply str 
-                                   (clojure.string/lower-case (first property-name))
-                                   (rest property-name)))
-            handler (reify java.beans.PropertyChangeListener 
+                           property-name
+                           (apply str
+                                  (clojure.string/lower-case (first property-name))
+                                  (rest property-name)))
+            handler (reify java.beans.PropertyChangeListener
                       (propertyChange [this e] (handler (.getNewValue e))))]
         (.addPropertyChangeListener target property-name handler)
         (fn [] (.removePropertyChangeListener target property-name handler))))
@@ -325,16 +323,16 @@
     (seesaw.core/selection!)
   "
   ([widget options]
-    (reify Bindable
-      (subscribe [this handler]
-        (ssc/listen widget :selection 
-                    (fn [_] (-> widget (ssc/selection options) handler))))
-      (notify [this v]
-        (ssc/selection! widget options v))))
+   (reify Bindable
+     (subscribe [this handler]
+       (ssc/listen widget :selection
+                   (fn [_] (-> widget (ssc/selection options) handler))))
+     (notify [this v]
+       (ssc/selection! widget options v))))
   ([widget]
-    (selection widget {})))
+   (selection widget {})))
 
-(defn value 
+(defn value
   "Converts the value of a widget into a bindable. Applies to listbox,
   table, tree, combobox, checkbox, etc, etc. In short, anything to which
   (seesaw.core/value) applies. This is a \"receive-only\" bindable since
@@ -355,13 +353,13 @@
     (seesaw.core/value!)
   "
   ([widget]
-    (reify Bindable
-      (subscribe [this handler]
-        (throw (UnsupportedOperationException. "Can't subscribe to value")))
-      (notify [this v]
-        (ssc/value! widget v)))))
+   (reify Bindable
+     (subscribe [this handler]
+       (throw (UnsupportedOperationException. "Can't subscribe to value")))
+     (notify [this v]
+       (ssc/value! widget v)))))
 
-(defn transform 
+(defn transform
   "Creates a bindable that takes an incoming value v, applies
   (f v args), and passes the result on. f should be side-effect
   free.
@@ -373,7 +371,7 @@
     (reify Bindable
       (subscribe [this handler]
         (swap! state update-in [:handlers] conj handler)
-        (fn [] 
+        (fn []
           (swap! state update-in [:handlers] (partial remove-handler handler))))
       (notify [this v]
         (let [new-value (:value (swap! state assoc :value (apply f v args)))]
@@ -406,7 +404,7 @@
   [bindings & body]
   `(b-do* (fn ~bindings ~@body)))
 
-(defn filter 
+(defn filter
   "Executes a predicate on incoming value. If the predicate returns a truthy
   value, the incoming value is passed on to the next bindable in the chain. 
   Otherwise, nothing is notified.
@@ -436,7 +434,7 @@
         (fn []
           (swap! state update-in [:handlers] (partial remove-handler handler))))
       (notify [this v]
-        (when (pred v) 
+        (when (pred v)
           (swap! state assoc :value v)
           (doseq [h (:handlers @state)]
             (h v)))))))
@@ -506,9 +504,9 @@
           (swap! handlers remove-handler handler)))
       (notify [this v]
         (schedule-fn
-          (fn [] (doseq [h @handlers] (h v))))))))
+         (fn [] (doseq [h @handlers] (h v))))))))
 
-(defn notify-later 
+(defn notify-later
   "Creates a bindable that notifies its subscribers (next in chain) on the
   swing thread using (seesaw.invoke/invoke-later). You should use this to
   ensure that things happen on the right thread, e.g. (seesaw.bind/property)
@@ -520,7 +518,7 @@
   []
   (notify-when* invoke/invoke-later*))
 
-(defn notify-soon 
+(defn notify-soon
   "Creates a bindable that notifies its subscribers (next in chain) on the
   swing thread using (seesaw.invoke/invoke-soon). You should use this to
   ensure that things happen on the right thread, e.g. (seesaw.bind/property)
@@ -532,7 +530,7 @@
   []
   (notify-when* invoke/invoke-soon*))
 
-(defn notify-now 
+(defn notify-now
   "Creates a bindable that notifies its subscribers (next in chain) on the
   swing thread using (seesaw.invoke/invoke-now). You should use this to
   ensure that things happen on the right thread, e.g. (seesaw.bind/property)
@@ -548,16 +546,16 @@
 
 (extend-protocol ToBindable
   javax.swing.AbstractButton
-    (to-bindable* [this] (selection this))
+  (to-bindable* [this] (selection this))
   javax.swing.JLabel
-    (to-bindable* [this] (property this :text))
+  (to-bindable* [this] (property this :text))
   javax.swing.JSlider
-    (to-bindable* [this] (.getModel this))
+  (to-bindable* [this] (.getModel this))
   javax.swing.JSpinner
-    (to-bindable* [this] (.getModel this))
+  (to-bindable* [this] (.getModel this))
   javax.swing.JProgressBar
-    (to-bindable* [this] (.getModel this))
+  (to-bindable* [this] (.getModel this))
   javax.swing.text.JTextComponent
-    (to-bindable* [this] (.getDocument this))
+  (to-bindable* [this] (.getDocument this))
   javax.swing.JComboBox
-    (to-bindable* [this] this))
+  (to-bindable* [this] this))

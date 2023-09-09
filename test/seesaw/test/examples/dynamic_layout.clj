@@ -15,11 +15,10 @@
 
 (defn make-dynamic-panel
   [i]
-  (let [
-        ; This is the "extra" bit that comes and goes
+  (let [; This is the "extra" bit that comes and goes
         extra     (horizontal-panel
-                    :items [(label :text (str "Panel " i))
-                            (button :text (str "Panel " i))])
+                   :items [(label :text (str "Panel " i))
+                           (button :text (str "Panel " i))])
 
         ; This is the full size panel with everything in it
         full-size (border-panel
@@ -36,7 +35,7 @@
     ; When the panel is resized (due to layout of container)
     ; turn things on an off based on available space.
     (listen panel
-      :component-resized
+            :component-resized
             (fn [e]
               (let [big-enough? (>= (height e) (.height preferred))]
                 (config! extra :visible? big-enough?))))
@@ -48,8 +47,8 @@
 
 (defexample []
   (-> (frame  :content (make-vertical-panel))
-    pack!
-    show!))
+      pack!
+      show!))
 
 ;(run :dispose)
 

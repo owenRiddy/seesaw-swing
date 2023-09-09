@@ -21,22 +21,22 @@
         output (text :editable? false)]
     ; Set up our binding chain
     (bind/bind input                         ; Take changes to input
-          (bind/transform #(.toUpperCase %)) ; Pass through upper case transform
-          value                         ; Put the value in the atom 
-          output)                       ; Show the final value in the output text doc
+               (bind/transform #(.toUpperCase %)) ; Pass through upper case transform
+               value                         ; Put the value in the atom 
+               output)                       ; Show the final value in the output text doc
     (text! input "Initial Value")
-    (frame 
-      :content 
-        (vertical-panel 
-          :border 5
-          :items ["Enter text here:" 
-                  input 
-                  :separator
-                  "Changed atom is reflected here:"
-                  output
-                  :separator
-                  (action :name "Print atom value to console"
-                          :handler (fn [e] (println "Current atom value is: " @value)))]))))
+    (frame
+     :content
+     (vertical-panel
+      :border 5
+      :items ["Enter text here:"
+              input
+              :separator
+              "Changed atom is reflected here:"
+              output
+              :separator
+              (action :name "Print atom value to console"
+                      :handler (fn [e] (println "Current atom value is: " @value)))]))))
 
 ;(run :dispose)
 

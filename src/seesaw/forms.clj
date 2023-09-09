@@ -10,14 +10,14 @@
 
 (ns seesaw.forms
   (:import
-    javax.swing.JPanel
-    com.jgoodies.forms.builder.DefaultFormBuilder
-    com.jgoodies.forms.layout.FormLayout)
+   javax.swing.JPanel
+   com.jgoodies.forms.builder.DefaultFormBuilder
+   com.jgoodies.forms.layout.FormLayout)
   (:require
-    seesaw.core)
+   seesaw.core)
   (:use
-    [seesaw.options :only (bean-option default-option apply-options ignore-options option-map option-provider)]
-    [seesaw.util :only (resource)]))
+   [seesaw.options :only (bean-option default-option apply-options ignore-options option-map option-provider)]
+   [seesaw.util :only (resource)]))
 
 (defprotocol ComponentSpec
   (append [this builder] "Add the given component to the form builder"))
@@ -92,24 +92,23 @@
 
 (def ^{:private true} layout-options
   (option-map
-    (default-option 
-      :column-groups 
-      (fn set-column-groups [c v]
-        (cond
-          (instance? FormLayout c)
-            (.setColumnGroups c (into-array (map int-array v)))
-          :else
-            (set-column-groups (.getLayout c) v))))))
+   (default-option
+    :column-groups
+    (fn set-column-groups [c v]
+      (cond
+        (instance? FormLayout c)
+        (.setColumnGroups c (into-array (map int-array v)))
+        :else
+        (set-column-groups (.getLayout c) v))))))
 
 (def ^{:private true} builder-options
   (option-map
-    (default-option :items #(doseq [item %2] (append item %1)))
-    (default-option :default-dialog-border? #(when %2 (.setDefaultDialogBorder %1)))
-    (bean-option :default-row-spec DefaultFormBuilder)
-    (bean-option :leading-column-offset DefaultFormBuilder)
-    (bean-option :line-gap-size DefaultFormBuilder)
-    (bean-option :paragraph-gap-size DefaultFormBuilder)))
-
+   (default-option :items #(doseq [item %2] (append item %1)))
+   (default-option :default-dialog-border? #(when %2 (.setDefaultDialogBorder %1)))
+   (bean-option :default-row-spec DefaultFormBuilder)
+   (bean-option :leading-column-offset DefaultFormBuilder)
+   (bean-option :line-gap-size DefaultFormBuilder)
+   (bean-option :paragraph-gap-size DefaultFormBuilder)))
 
 (def ^{:private true} ignore-builder-options
   (ignore-options builder-options))
@@ -119,8 +118,6 @@
 
 (option-provider DefaultFormBuilder (merge builder-options ignore-layout-options))
 (option-provider FormLayout (merge layout-options ignore-builder-options))
-
-
 
 (defn ^JPanel forms-panel
   "Construct a panel with a FormLayout. The column spec is

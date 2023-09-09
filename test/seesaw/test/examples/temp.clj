@@ -9,7 +9,7 @@
 ;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.test.examples.temp
-  (:use seesaw.core 
+  (:use seesaw.core
         seesaw.font
         seesaw.test.examples.example))
 
@@ -34,27 +34,27 @@
       (text! target (display (convert n)))
       (text! target ""))))
 
-(defn listen-temp [source target f] 
+(defn listen-temp [source target f]
   (listen source :document (fn [e] (update-temp source target f)))
   source)
 
 (defexample []
-  (let [c (text :tip "Enter Celsius temperature") 
+  (let [c (text :tip "Enter Celsius temperature")
         f (text :tip "Enter Fahrenheit temperature")]
-    (frame 
-      :title "Temp Converter" 
-      :content
-      (grid-panel 
-        :hgap 10 :vgap 10 :columns 2 :border 10
-        :items 
-        [(label :text "Degrees Celsius" 
-                :halign :right 
-                :font "ARIAL-BOLD-20"  )
-         (listen-temp c f c-to-f)
-         (label :text "Degrees Fahrenheit" 
-                :halign :right 
-                :font {:style :italic :size 20 :name "Arial"})
-         (listen-temp f c f-to-c)]))))
+    (frame
+     :title "Temp Converter"
+     :content
+     (grid-panel
+      :hgap 10 :vgap 10 :columns 2 :border 10
+      :items
+      [(label :text "Degrees Celsius"
+              :halign :right
+              :font "ARIAL-BOLD-20")
+       (listen-temp c f c-to-f)
+       (label :text "Degrees Fahrenheit"
+              :halign :right
+              :font {:style :italic :size 20 :name "Arial"})
+       (listen-temp f c f-to-c)]))))
 
 ;(run :dispose) 
 

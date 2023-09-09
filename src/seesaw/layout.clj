@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for dealing with layouts. Prefer layout specific constructors in seesaw.core, e.g. border-panel."
       :author "Dave Ray"}
-  seesaw.layout
+ seesaw.layout
 
   (:use [seesaw.options :only [option-map
                                default-option bean-option resource-option
@@ -36,10 +36,10 @@
 (defn add-widget
   ([c w] (add-widget c w nil))
   ([^java.awt.Container c w constraint]
-    (let [w* (if w (make-widget* w))]
-      (check-args (not (nil? w*)) (str "Can't add nil widget. Original was (" w ")"))
-      (.add c ^java.awt.Component w* constraint)
-      w*)))
+   (let [w* (if w (make-widget* w))]
+     (check-args (not (nil? w*)) (str "Can't add nil widget. Original was (" w ")"))
+     (.add c ^java.awt.Component w* constraint)
+     w*)))
 
 (defn add-widgets
   [^java.awt.Container c ws]
@@ -50,14 +50,14 @@
 
 (def default-items-option
   (default-option
-    :items
-    #(add-widgets %1 %2)
-    #(seq (.getComponents ^java.awt.Container %1))
-    "A sequence of widgets to add."))
+   :items
+   #(add-widgets %1 %2)
+   #(seq (.getComponents ^java.awt.Container %1))
+   "A sequence of widgets to add."))
 
 (def nil-layout-options
   (option-map
-    default-items-option))
+   default-items-option))
 
 ;*******************************************************************************
 ; Border Layout
@@ -78,44 +78,43 @@
 
 (def border-layout-options
   (merge
-    (option-map
-      (default-option :hgap
-        #(.setHgap ^java.awt.BorderLayout (.getLayout ^java.awt.Container %1) %2)
-        nil
-        ["An integer in pixels"])
-      (default-option :vgap
-        #(.setVgap ^java.awt.BorderLayout (.getLayout ^java.awt.Container %1) %2)
-        nil
-        ["An integer in pixels"])
-      (default-option :items
-        border-panel-items-setter
-        border-panel-items-getter
-        ['[(label "North") :north (button :text "South") :south]]))
-    (apply option-map
-           (map
-             (fn [[k v]] (default-option k #(add-widget %1 %2 v)))
-             border-layout-dirs)) ))
+   (option-map
+    (default-option :hgap
+                    #(.setHgap ^java.awt.BorderLayout (.getLayout ^java.awt.Container %1) %2)
+                    nil
+                    ["An integer in pixels"])
+    (default-option :vgap
+                    #(.setVgap ^java.awt.BorderLayout (.getLayout ^java.awt.Container %1) %2)
+                    nil
+                    ["An integer in pixels"])
+    (default-option :items
+                    border-panel-items-setter
+                    border-panel-items-getter
+                    ['[(label "North") :north (button :text "South") :south]]))
+   (apply option-map
+          (map
+           (fn [[k v]] (default-option k #(add-widget %1 %2 v)))
+           border-layout-dirs))))
 
 (option-provider java.awt.BorderLayout border-layout-options)
-
 
 ;*******************************************************************************
 ; Card Layout
 
 (def card-layout-options
   (option-map
-    (default-option :items
-      (fn [panel items]
-        (doseq [[w id] items]
-          (add-widget panel w (name id)))))
-    (default-option :hgap
-      #(.setHgap ^java.awt.CardLayout (.getLayout ^java.awt.Container %1) %2)
-      nil
-      ["Integer pixels"])
-    (default-option :vgap
-      #(.setVgap ^java.awt.CardLayout (.getLayout ^java.awt.Container %1) %2)
-      nil
-      ["Integer pixels"])))
+   (default-option :items
+                   (fn [panel items]
+                     (doseq [[w id] items]
+                       (add-widget panel w (name id)))))
+   (default-option :hgap
+                   #(.setHgap ^java.awt.CardLayout (.getLayout ^java.awt.Container %1) %2)
+                   nil
+                   ["Integer pixels"])
+   (default-option :vgap
+                   #(.setVgap ^java.awt.CardLayout (.getLayout ^java.awt.Container %1) %2)
+                   nil
+                   ["Integer pixels"])))
 
 (option-provider java.awt.CardLayout card-layout-options)
 
@@ -127,37 +126,35 @@
 
 (def flow-layout-options
   (option-map
-    default-items-option
-    (default-option :hgap
-      #(.setHgap ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1) %2)
-      nil
-      ["Integer pixels"])
-    (default-option :vgap
-      #(.setVgap ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1) %2)
-      nil
-      ["Integer pixels"])
-    (default-option :align
-      #(.setAlignment ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1)
-                      (get flow-align-table %2 %2))
-      nil
-      (keys flow-align-table))
-    (default-option :align-on-baseline?
-      #(.setAlignOnBaseline ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1) (boolean %2))
-      'boolean)))
+   default-items-option
+   (default-option :hgap
+                   #(.setHgap ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1) %2)
+                   nil
+                   ["Integer pixels"])
+   (default-option :vgap
+                   #(.setVgap ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1) %2)
+                   nil
+                   ["Integer pixels"])
+   (default-option :align
+                   #(.setAlignment ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1)
+                                   (get flow-align-table %2 %2))
+                   nil
+                   (keys flow-align-table))
+   (default-option :align-on-baseline?
+                   #(.setAlignOnBaseline ^java.awt.FlowLayout (.getLayout ^java.awt.Container %1) (boolean %2))
+                   'boolean)))
 
 (option-provider java.awt.FlowLayout flow-layout-options)
 
 ;*******************************************************************************
 ; Box Layout
 
-(def ^{:private true} box-layout-dir-table {
-  :horizontal javax.swing.BoxLayout/X_AXIS
-  :vertical   javax.swing.BoxLayout/Y_AXIS
-})
+(def ^{:private true} box-layout-dir-table {:horizontal javax.swing.BoxLayout/X_AXIS
+                                            :vertical   javax.swing.BoxLayout/Y_AXIS})
 
 (def box-layout-options
   (option-map
-    default-items-option))
+   default-items-option))
 
 (option-provider javax.swing.BoxLayout box-layout-options)
 
@@ -168,25 +165,25 @@
 
 (def grid-layout-options
   (option-map
-    default-items-option
-    (ignore-option :rows    ["Integer rows"])
-    (ignore-option :columns ["Integer columns"])
-    (default-option :hgap
-      #(.setHgap ^java.awt.GridLayout (.getLayout ^java.awt.Container %1) %2)
-      nil
-      ["Integer pixels"])
-    (default-option :vgap
-      #(.setVgap ^java.awt.GridLayout (.getLayout ^java.awt.Container %1) %2)
-      nil
-      ["Integer pixels"])))
+   default-items-option
+   (ignore-option :rows    ["Integer rows"])
+   (ignore-option :columns ["Integer columns"])
+   (default-option :hgap
+                   #(.setHgap ^java.awt.GridLayout (.getLayout ^java.awt.Container %1) %2)
+                   nil
+                   ["Integer pixels"])
+   (default-option :vgap
+                   #(.setVgap ^java.awt.GridLayout (.getLayout ^java.awt.Container %1) %2)
+                   nil
+                   ["Integer pixels"])))
 
 (option-provider java.awt.GridLayout grid-layout-options)
 
 (defn grid-layout [rows columns]
   (java.awt.GridLayout.
-    (or rows 0)
-    (or columns (if rows 0 1))
-    0 0))
+   (or rows 0)
+   (or columns (if rows 0 1))
+   0 0))
 
 ;*******************************************************************************
 ; Grid bag layout
@@ -201,15 +198,15 @@
 
 (def ^{:private true} gbc-anchors
   (constant-map GridBagConstraints
-    :north :south :east :west
-    :northwest :northeast :southwest :southeast :center
+                :north :south :east :west
+                :northwest :northeast :southwest :southeast :center
 
-    :page-start :page-end :line-start :line-end
-    :first-line-start :first-line-end :last-line-start :last-line-end
+                :page-start :page-end :line-start :line-end
+                :first-line-start :first-line-end :last-line-start :last-line-end
 
-    :baseline :baseline-leading :baseline-trailing
-    :above-baseline :above-baseline-leading :above-baseline-trailing
-    :below-baseline :below-baseline-leading :below-baseline-trailing))
+                :baseline :baseline-leading :baseline-trailing
+                :above-baseline :above-baseline-leading :above-baseline-trailing
+                :below-baseline :below-baseline-leading :below-baseline-trailing))
 
 (defn- gbc-grid-handler [^GridBagConstraints gbc v]
   (let [x (.gridx gbc)
@@ -223,18 +220,18 @@
 
 (def ^{:private true} grid-bag-constraints-options
   (option-map
-    (default-option :grid gbc-grid-handler)
-    (default-option :gridx #(set! (. ^GridBagConstraints %1 gridx)      (get gbc-grid-xy %2 %2)))
-    (default-option :gridy #(set! (. ^GridBagConstraints %1 gridy)      (get gbc-grid-xy %2 %2)))
-    (default-option :gridwidth #(set! (. ^GridBagConstraints %1 gridwidth)  (get gbc-grid-wh %2 %2)))
-    (default-option :gridheight #(set! (. ^GridBagConstraints %1 gridheight) (get gbc-grid-wh %2 %2)))
-    (default-option :fill #(set! (. ^GridBagConstraints %1 fill)       (get gbc-fill %2 %2)))
-    (default-option :ipadx #(set! (. ^GridBagConstraints %1 ipadx)      %2))
-    (default-option :ipady #(set! (. ^GridBagConstraints %1 ipady)      %2))
-    (default-option :insets #(set! (. ^GridBagConstraints %1 insets)     %2))
-    (default-option :anchor #(set! (. ^GridBagConstraints %1 anchor)     (gbc-anchors %2)))
-    (default-option :weightx #(set! (. ^GridBagConstraints %1 weightx)    %2))
-    (default-option :weighty #(set! (. ^GridBagConstraints %1 weighty)    %2))))
+   (default-option :grid gbc-grid-handler)
+   (default-option :gridx #(set! (. ^GridBagConstraints %1 gridx)      (get gbc-grid-xy %2 %2)))
+   (default-option :gridy #(set! (. ^GridBagConstraints %1 gridy)      (get gbc-grid-xy %2 %2)))
+   (default-option :gridwidth #(set! (. ^GridBagConstraints %1 gridwidth)  (get gbc-grid-wh %2 %2)))
+   (default-option :gridheight #(set! (. ^GridBagConstraints %1 gridheight) (get gbc-grid-wh %2 %2)))
+   (default-option :fill #(set! (. ^GridBagConstraints %1 fill)       (get gbc-fill %2 %2)))
+   (default-option :ipadx #(set! (. ^GridBagConstraints %1 ipadx)      %2))
+   (default-option :ipady #(set! (. ^GridBagConstraints %1 ipady)      %2))
+   (default-option :insets #(set! (. ^GridBagConstraints %1 insets)     %2))
+   (default-option :anchor #(set! (. ^GridBagConstraints %1 anchor)     (gbc-anchors %2)))
+   (default-option :weightx #(set! (. ^GridBagConstraints %1 weightx)    %2))
+   (default-option :weighty #(set! (. ^GridBagConstraints %1 weighty)    %2))))
 
 (option-provider GridBagConstraints grid-bag-constraints-options)
 
@@ -245,12 +242,12 @@
   options to GridBagConstraints"
   [items]
   (second
-    (reduce
-      (fn [[^GridBagConstraints gbcs result] [widget & opts]]
-        (apply-options gbcs opts)
-        (vector (.clone gbcs) (conj result [widget gbcs])))
-      [(GridBagConstraints.) []]
-      items)))
+   (reduce
+    (fn [[^GridBagConstraints gbcs result] [widget & opts]]
+      (apply-options gbcs opts)
+      (vector (.clone gbcs) (conj result [widget gbcs])))
+    [(GridBagConstraints.) []]
+    items)))
 
 (defn- add-grid-bag-items
   [^java.awt.Container panel items]
@@ -262,28 +259,27 @@
 
 (def form-layout-options
   (option-map
-    (default-option :items add-grid-bag-items)))
+   (default-option :items add-grid-bag-items)))
 
 (option-provider GridBagLayout form-layout-options)
 
-
 (extend-protocol LayoutManipulation
   java.awt.LayoutManager
-    (add!* [layout target widget constraint]
-      (add-widget target widget))
-    (get-constraint* [layout container widget] nil)
+  (add!* [layout target widget constraint]
+    (add-widget target widget))
+  (get-constraint* [layout container widget] nil)
 
   java.awt.BorderLayout
-    (add!* [layout target widget constraint]
-      (add-widget target widget (border-layout-dirs constraint)))
-    (get-constraint* [layout container widget]
-      (.getConstraints layout widget))
+  (add!* [layout target widget constraint]
+    (add-widget target widget (border-layout-dirs constraint)))
+  (get-constraint* [layout container widget]
+    (.getConstraints layout widget))
 
   java.awt.CardLayout
-    (add!* [layout target widget constraint]
-      (add-widget target widget (name constraint)))
+  (add!* [layout target widget constraint]
+    (add-widget target widget (name constraint)))
 
-    (get-constraint* [layout container widget]))
+  (get-constraint* [layout container widget]))
 
 ;;;
 

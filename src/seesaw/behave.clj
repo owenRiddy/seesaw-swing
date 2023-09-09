@@ -12,7 +12,7 @@
            widgets. Most cover basic functionality that's missing from Swing
            or just a pain to implement."
       :author "Dave Ray"}
-  seesaw.behave
+ seesaw.behave
   (:use [seesaw core]
         [seesaw.util :only [to-seq]]))
 
@@ -35,12 +35,12 @@
   "
   [w]
   (let [to-text #(if (instance? javax.swing.JComboBox %)
-                          (.. ^javax.swing.JComboBox % getEditor getEditorComponent) %)
+                   (.. ^javax.swing.JComboBox % getEditor getEditorComponent) %)
         targets (map #(-> % to-widget to-text) (to-seq w))]
     (listen targets :focus-gained
       ; TODO is it safe to assume JTextComponent here? Other option is
       ; to extend selection stuff to text widgets
-      #(.selectAll ^javax.swing.text.JTextComponent (to-widget %)))))
+            #(.selectAll ^javax.swing.text.JTextComponent (to-widget %)))))
 
 (defn when-mouse-dragged
   "A helper for handling mouse dragging on a widget. This isn't that complicated,
@@ -61,20 +61,20 @@
   "
   [w & opts]
   (let [{:keys [start drag finish]
-         :or   { start (fn [e]) drag (fn [e [x y]]) finish (fn [e]) }} opts
+         :or   {start (fn [e]) drag (fn [e [x y]]) finish (fn [e])}} opts
         last-point (java.awt.Point.)]
     (listen w
-      :mouse-pressed
-        (fn [^java.awt.event.MouseEvent e]
-          (.setLocation last-point (.getPoint e))
-          (start e))
-      :mouse-dragged
-        (fn [^java.awt.event.MouseEvent e]
-          (let [p (.getPoint e)]
+            :mouse-pressed
+            (fn [^java.awt.event.MouseEvent e]
+              (.setLocation last-point (.getPoint e))
+              (start e))
+            :mouse-dragged
+            (fn [^java.awt.event.MouseEvent e]
+              (let [p (.getPoint e)]
             ; TODO the delta reported here is incorrect if the widget is
             ; programmatically moved during the callback. See xyz-panel test.
-            (drag e [(- (.x p) (.x last-point)) (- (.y p) (.y last-point))])
-            (.setLocation last-point (.getPoint e))))
-      :mouse-released
-        finish)))
+                (drag e [(- (.x p) (.x last-point)) (- (.y p) (.y last-point))])
+                (.setLocation last-point (.getPoint e))))
+            :mouse-released
+            finish)))
 

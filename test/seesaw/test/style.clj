@@ -17,22 +17,22 @@
 
 (describe apply-stylesheet
 
-  (it "returns its input"
-    (let [lbl (label)]
-      (expect (= lbl (apply-stylesheet lbl {})))))
+          (it "returns its input"
+              (let [lbl (label)]
+                (expect (= lbl (apply-stylesheet lbl {})))))
 
-  (it "changes styles of widget for rules that match"
-    (let [lbl (label :id :lbl)
-          btn-a (button :class :btn)
-          btn-b (button :class :btn :id :btn-b)
-          p (border-panel :center lbl :north btn-a :south btn-b)]
-      (apply-stylesheet p
-        {[:#lbl] { :background :aliceblue
-                   :text "hi"}
-         [:.btn] { :foreground :red }
-         [:#btn-b] {:text "B"}})
-      (expect (= (to-color :aliceblue) (config lbl :background)))
-      (expect (= "hi" (text lbl)))
-      (expect (= "B" (text btn-b)))
-      (expect (= (to-color :red) (config btn-a :foreground)))
-      (expect (= (to-color :red) (config btn-b :foreground))))))
+          (it "changes styles of widget for rules that match"
+              (let [lbl (label :id :lbl)
+                    btn-a (button :class :btn)
+                    btn-b (button :class :btn :id :btn-b)
+                    p (border-panel :center lbl :north btn-a :south btn-b)]
+                (apply-stylesheet p
+                                  {[:#lbl] {:background :aliceblue
+                                            :text "hi"}
+                                   [:.btn] {:foreground :red}
+                                   [:#btn-b] {:text "B"}})
+                (expect (= (to-color :aliceblue) (config lbl :background)))
+                (expect (= "hi" (text lbl)))
+                (expect (= "B" (text btn-b)))
+                (expect (= (to-color :red) (config btn-a :foreground)))
+                (expect (= (to-color :red) (config btn-b :foreground))))))

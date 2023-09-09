@@ -22,29 +22,29 @@
   (let [group (button-group)
         info-label (label :text "Info goes here" :border 10)
         panel (border-panel
-                :north
-                  (horizontal-panel
+               :north
+               (horizontal-panel
                     ; Put radio buttons in the group with the :group option
                     ; Alternatively, the buttons could be created first and
                     ; then passed to the :buttons option of (button-group)
-                    :items [(radio :text "First" :group group)
-                            (radio :text "Second" :group group)
-                            (radio :text "Third" :selected? true :group group)])
-                :center info-label)]
+                :items [(radio :text "First" :group group)
+                        (radio :text "Second" :group group)
+                        (radio :text "Third" :selected? true :group group)])
+               :center info-label)]
     ; This will hook an action listener to all the buttons in the group
     ; Note that if more buttons are added, this is *not* extended to those
     ; new buttons.
     (listen group :action
-      (fn [e]
-        (text! info-label
+            (fn [e]
+              (text! info-label
           ; Which button was selected can be retrieved either through
           ; the event object in the usual way, or by asking for the
           ; buton group's selection.
-          (str
-            "<html>"
-            "(text (to-widget e)): " (text (to-widget e)) "<br>"
-            "<br>"
-            "(text (selection group)): " (text (selection group)) "</html>"))))
+                     (str
+                      "<html>"
+                      "(text (to-widget e)): " (text (to-widget e)) "<br>"
+                      "<br>"
+                      "(text (selection group)): " (text (selection group)) "</html>"))))
     panel))
 
 (defexample run []

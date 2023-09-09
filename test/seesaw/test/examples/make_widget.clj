@@ -26,26 +26,23 @@
   MakeWidget
   (make-widget* [person]
     (mig-panel :constraints ["", "[][grow]"]
-      :border [(line-border :thickness 1) 5]
-      :items [
-        [ "First Name"                    "gap 10"]
-        [ (name-field person :first-name) "growx, wrap"]
-        [ "Last Name"                     "gap 10"]
-        [ (name-field person :last-name)  "growx"]])))
-
+               :border [(line-border :thickness 1) 5]
+               :items [["First Name"                    "gap 10"]
+                       [(name-field person :first-name) "growx, wrap"]
+                       ["Last Name"                     "gap 10"]
+                       [(name-field person :last-name)  "growx"]])))
 
 ; Make some people
-(def people [
-  (Person. 1 "Bob" "Dylan")
-  (Person. 2 "James" "Brown")
-  (Person. 3 "Lee" "Oswald")
-  (Person. 4 "Rita" "Hayward")])
+(def people [(Person. 1 "Bob" "Dylan")
+             (Person. 2 "James" "Brown")
+             (Person. 3 "Lee" "Oswald")
+             (Person. 4 "Rita" "Hayward")])
 
 ; Pass the people as the :items of a panel and we get a scrollable
 ; list of widgets.
 (defexample []
   (frame :title "People"
-    :content (scrollable (vertical-panel :items people))))
+         :content (scrollable (vertical-panel :items people))))
 
 ;(run :dispose)
 

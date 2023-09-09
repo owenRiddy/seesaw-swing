@@ -44,38 +44,38 @@
   [column-names column-key-map column-classes]
   (let [full-values (atom [])]
     (proxy+- [(object-array column-names) 0]
-            javax.swing.table.DefaultTableModel
-      (isCellEditable [^javax.swing.table.DefaultTableModel this row col] false)
-      (setRowCount [^javax.swing.table.DefaultTableModel this ^int rows]
+             javax.swing.table.DefaultTableModel
+             (isCellEditable [^javax.swing.table.DefaultTableModel this row col] false)
+             (setRowCount [^javax.swing.table.DefaultTableModel this ^int rows]
         ; trick to force proxy-super macro to see correct type to avoid reflection.
-        (swap! full-values (fn [v]
-                             (if (< rows (count v))
-                               (subvec v rows)
-                               (vec (concat v (take (- (count v) rows) (constantly nil)))))))
-        (proxy-super+- setRowCount this rows))
-      (addRow [^javax.swing.table.DefaultTableModel this values]
-        (swap! full-values conj (last values))
-        (proxy-super+- addRow this values))
-      (insertRow [^javax.swing.table.DefaultTableModel this row values]
-        (swap! full-values insert-at row (last values))
-        (proxy-super+- insertRow this row values))
-      (removeRow [^javax.swing.table.DefaultTableModel this row]
-        (swap! full-values remove-at row)
-        (proxy-super+- removeRow this row))
+                          (swap! full-values (fn [v]
+                                               (if (< rows (count v))
+                                                 (subvec v rows)
+                                                 (vec (concat v (take (- (count v) rows) (constantly nil)))))))
+                          (proxy-super+- setRowCount this rows))
+             (addRow [^javax.swing.table.DefaultTableModel this values]
+                     (swap! full-values conj (last values))
+                     (proxy-super+- addRow this values))
+             (insertRow [^javax.swing.table.DefaultTableModel this row values]
+                        (swap! full-values insert-at row (last values))
+                        (proxy-super+- insertRow this row values))
+             (removeRow [^javax.swing.table.DefaultTableModel this row]
+                        (swap! full-values remove-at row)
+                        (proxy-super+- removeRow this row))
       ; TODO this stuff is an awful hack and now that I'm wiser, I should fix it.
-      (getValueAt [^javax.swing.table.DefaultTableModel this row col]
-        (if (= -1 row col)
-          column-key-map
-          (if (= -1 col)
-            (get @full-values row)
-            (proxy-super+- getValueAt this row col))))
-      (setValueAt [^javax.swing.table.DefaultTableModel this value row col]
-        (if (= -1 col)
-          (swap! full-values assoc row value)
-          (proxy-super+- setValueAt this value row col)))
-      (getColumnClass [^javax.swing.table.DefaultTableModel this ^int c]
-        (proxy-super+- getColumnClass this c)
-        (nth column-classes c)))))
+             (getValueAt [^javax.swing.table.DefaultTableModel this row col]
+                         (if (= -1 row col)
+                           column-key-map
+                           (if (= -1 col)
+                             (get @full-values row)
+                             (proxy-super+- getValueAt this row col))))
+             (setValueAt [^javax.swing.table.DefaultTableModel this value row col]
+                         (if (= -1 col)
+                           (swap! full-values assoc row value)
+                           (proxy-super+- setValueAt this value row col)))
+             (getColumnClass [^javax.swing.table.DefaultTableModel this ^int c]
+                             (proxy-super+- getColumnClass this c)
+                             (nth column-classes c)))))
 
 (defn- get-full-value [^javax.swing.table.TableModel model row]
   (try
@@ -92,8 +92,8 @@
       (let [n (.getColumnCount model)]
         (apply hash-map
                (interleave
-                 (map #(.getColumnName model %) (range n))
-                 (range n)))))))
+                (map #(.getColumnName model %) (range n))
+                (range n)))))))
 
 (defn table-model
   "Creates a TableModel from column and row data. Takes two options:
@@ -148,11 +148,11 @@
   (if (and (>= row 0) (< row (.getRowCount model)))
     (let [full-row (get-full-value model row)]
       (merge
-        full-row
-        (reduce
-          (fn [result k] (assoc result k (.getValueAt model row (col-key-map k))))
-          {}
-          (keys col-key-map))))
+       full-row
+       (reduce
+        (fn [result k] (assoc result k (.getValueAt model row (col-key-map k))))
+        {}
+        (keys col-key-map))))
     nil))
 
 (defn value-at
@@ -218,23 +218,23 @@
     http://download.oracle.com/javase/6/docs/api/javax/swing/table/TableModel.html
   "
   ([target row value]
-    (let [target      (to-table-model target)
-          col-key-map (get-column-key-map target)
-          ^objects row-values  (unpack-row col-key-map value)]
-      (doseq [i (range 0 (.getColumnCount target))]
+   (let [target      (to-table-model target)
+         col-key-map (get-column-key-map target)
+         ^objects row-values  (unpack-row col-key-map value)]
+     (doseq [i (range 0 (.getColumnCount target))]
         ; TODO this precludes setting a cell to nil. Do we care?
-        (let [v (aget row-values i)]
-          (when-not (nil? v)
-            (.setValueAt target (aget row-values i) row i))))
+       (let [v (aget row-values i)]
+         (when-not (nil? v)
+           (.setValueAt target (aget row-values i) row i))))
       ; merge with current full-map value so that extra fields aren't lost.
-      (.setValueAt target
-                   (merge (.getValueAt target row -1)
-                          (last row-values)) row -1))
-    target)
+     (.setValueAt target
+                  (merge (.getValueAt target row -1)
+                         (last row-values)) row -1))
+   target)
   ([target row value & more]
-    (when more
-      (apply update-at! target more))
-    (update-at! target row value)))
+   (when more
+     (apply update-at! target more))
+   (update-at! target row value)))
 
 (defn insert-at!
   "Inserts one or more rows into a table. The arguments are one or more row-index/value
@@ -257,15 +257,15 @@
 
   "
   ([target ^Integer row value]
-    (let [target  (to-table-model target)
-          col-key-map (get-column-key-map target)
-          ^objects row-values  (unpack-row col-key-map value)]
-      (.insertRow target row row-values))
+   (let [target  (to-table-model target)
+         col-key-map (get-column-key-map target)
+         ^objects row-values  (unpack-row col-key-map value)]
+     (.insertRow target row row-values))
    target)
   ([target row value & more]
-    (when more
-      (apply insert-at! target more))
-    (insert-at! target row value)))
+   (when more
+     (apply insert-at! target more))
+   (insert-at! target row value)))
 
 (defn remove-at!
   "Remove one or more rows from a table or table model by index. Args are a list of row indices at
@@ -282,12 +282,12 @@
     (remove-at! t 0 3)
   "
   ([target row]
-    (.removeRow (to-table-model target) row)
+   (.removeRow (to-table-model target) row)
    target)
   ([target row & more]
-    (when more
-      (apply remove-at! target more))
-    (remove-at! target row)))
+   (when more
+     (apply remove-at! target more))
+   (remove-at! target row)))
 
 (defn clear!
   "Clear all rows from a table model or JTable.

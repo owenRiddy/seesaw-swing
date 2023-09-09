@@ -35,31 +35,31 @@
         done      (button :text "Done" :enabled? false)
         cancel    (button :text "Cancel")
         panel     (border-panel
-                    :border 5 :hgap 5 :vgap 5
-                    :north "The progress bar updates 20 times per second"
-                    :center pbar
-                    :south (grid-panel :rows 1 :items [done cancel]))]
+                   :border 5 :hgap 5 :vgap 5
+                   :north "The progress bar updates 20 times per second"
+                   :center pbar
+                   :south (grid-panel :rows 1 :items [done cancel]))]
     ; Wire up the done button
     (listen done :action-performed dispose!)
     ; Toggle buttons on done
-    (bind/bind 
-      done? 
-      (bind/some identity) ; (when done?)
-      (bind/notify-later)  ; cross to swing thread
-      (bind/tee
-        (bind/property done :enabled?)
-        (bind/bind 
-          (bind/transform not) 
-          (bind/property cancel :enabled?))))
+    (bind/bind
+     done?
+     (bind/some identity) ; (when done?)
+     (bind/notify-later)  ; cross to swing thread
+     (bind/tee
+      (bind/property done :enabled?)
+      (bind/bind
+       (bind/transform not)
+       (bind/property cancel :enabled?))))
     ; Wire up cancel button.
-    (listen cancel :action-performed 
-      (fn [_] 
-        (reset! canceled? true)))
+    (listen cancel :action-performed
+            (fn [_]
+              (reset! canceled? true)))
     ; Wire up progress bar.
-    (bind/bind 
-      progress 
-      (bind/notify-later) 
-      pbar)
+    (bind/bind
+     progress
+     (bind/notify-later)
+     pbar)
     (-> #(processing items done? canceled? progress) Thread. .start)
     (frame :title "Example GUI" :on-close :dispose :content panel)))
 

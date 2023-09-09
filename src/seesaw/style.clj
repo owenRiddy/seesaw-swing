@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for styling apps. Prefer (seesaw.core/stylesheet) and friends."
       :author "Dave Ray"}
-  seesaw.style
+ seesaw.style
   (:use [seesaw.config :only [config!]]
         [seesaw.selector]))
 

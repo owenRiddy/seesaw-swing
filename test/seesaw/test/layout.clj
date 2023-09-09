@@ -14,16 +14,16 @@
         [lazytest.expect :only (expect)]))
 
 (describe handle-structure-change
-  (it "should successfully handle all kinds of components"
-    (handle-structure-change (proxy [java.awt.Component] []))))
+          (it "should successfully handle all kinds of components"
+              (handle-structure-change (proxy [java.awt.Component] []))))
 
 (describe realize-grid-bag-constraints
-  (it "should return a vector of widget/constraint pairs"
-    (let [[[w0 c0] [w1 c1] & more] (realize-grid-bag-constraints [[:first :weightx 99 :weighty 555 :gridx :relative] [:second :weightx 100 :anchor :baseline]])]
-      (expect (nil? more))
-      (expect (= :first w0))
-      (expect (= 99.0 (.weightx c0)))
-      (expect (= 555.0 (.weighty c0)))
-      (expect (= :second w1))
-      (expect (= 100.0 (.weightx c1)))
-      (expect (= 555.0 (.weighty c1))))))
+          (it "should return a vector of widget/constraint pairs"
+              (let [[[w0 c0] [w1 c1] & more] (realize-grid-bag-constraints [[:first :weightx 99 :weighty 555 :gridx :relative] [:second :weightx 100 :anchor :baseline]])]
+                (expect (nil? more))
+                (expect (= :first w0))
+                (expect (= 99.0 (.weightx c0)))
+                (expect (= 555.0 (.weighty c0)))
+                (expect (= :second w1))
+                (expect (= 100.0 (.weightx c1)))
+                (expect (= 555.0 (.weighty c1))))))

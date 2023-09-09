@@ -10,9 +10,9 @@
 
 (ns ^{:doc "File chooser and other common dialogs."
       :author "Dave Ray"}
-  seesaw.chooser
+ seesaw.chooser
   (:use [seesaw.color :only [to-color]]
-        [seesaw.options :only [default-option bean-option apply-options 
+        [seesaw.options :only [default-option bean-option apply-options
                                option-map option-provider]]
         [seesaw.util :only [illegal-argument]])
   (:import (javax.swing.filechooser FileFilter FileNameExtensionFilter)
@@ -38,50 +38,46 @@
     (getDescription []
       description)))
 
-(def ^{:private true} file-chooser-types {
-  :open   JFileChooser/OPEN_DIALOG
-  :save   JFileChooser/SAVE_DIALOG
-  :custom JFileChooser/CUSTOM_DIALOG
-})
+(def ^{:private true} file-chooser-types {:open   JFileChooser/OPEN_DIALOG
+                                          :save   JFileChooser/SAVE_DIALOG
+                                          :custom JFileChooser/CUSTOM_DIALOG})
 
-(def ^{:private true} file-selection-modes {
-  :files-only     JFileChooser/FILES_ONLY
-  :dirs-only      JFileChooser/DIRECTORIES_ONLY
-  :files-and-dirs JFileChooser/FILES_AND_DIRECTORIES
-})
+(def ^{:private true} file-selection-modes {:files-only     JFileChooser/FILES_ONLY
+                                            :dirs-only      JFileChooser/DIRECTORIES_ONLY
+                                            :files-and-dirs JFileChooser/FILES_AND_DIRECTORIES})
 
 (defn set-file-filters [^JFileChooser chooser filters]
   (.resetChoosableFileFilters chooser)
   (doseq [f filters]
     (.addChoosableFileFilter chooser
-      (cond
-        (instance? FileFilter f) 
-          f
+                             (cond
+                               (instance? FileFilter f)
+                               f
 
-        (and (sequential? f) (sequential? (second f)))
-          (FileNameExtensionFilter. (first f) (into-array (second f)))
+                               (and (sequential? f) (sequential? (second f)))
+                               (FileNameExtensionFilter. (first f) (into-array (second f)))
 
-        (and (sequential? f) (fn? (second f)))
-          (apply file-filter f)
+                               (and (sequential? f) (fn? (second f)))
+                               (apply file-filter f)
 
-        :else
-        (illegal-argument "not a valid filter: %s" f)))))
+                               :else
+                               (illegal-argument "not a valid filter: %s" f)))))
 
 (defn- set-suggested-name [^JFileChooser chooser suggested-name]
   (.setSelectedFile chooser (if (instance? java.io.File suggested-name)
                               suggested-name (java.io.File. suggested-name))))
 
-(def ^{:private true} file-chooser-options 
+(def ^{:private true} file-chooser-options
   (option-map
-    (default-option :dir
-      (fn [^JFileChooser chooser dir] 
-        (.setCurrentDirectory chooser (if (instance? java.io.File dir) dir 
-                                          (java.io.File. (str dir))))))
-    (bean-option [:multi? :multi-selection-enabled] JFileChooser boolean)
-    (bean-option [:selection-mode :file-selection-mode] JFileChooser file-selection-modes)
-    (default-option :filters set-file-filters)
-    (bean-option [:all-files? :accept-all-file-filter-used] JFileChooser boolean)
-    (default-option :suggested-name set-suggested-name)))
+   (default-option :dir
+                   (fn [^JFileChooser chooser dir]
+                     (.setCurrentDirectory chooser (if (instance? java.io.File dir) dir
+                                                       (java.io.File. (str dir))))))
+   (bean-option [:multi? :multi-selection-enabled] JFileChooser boolean)
+   (bean-option [:selection-mode :file-selection-mode] JFileChooser file-selection-modes)
+   (default-option :filters set-file-filters)
+   (bean-option [:all-files? :accept-all-file-filter-used] JFileChooser boolean)
+   (default-option :suggested-name set-suggested-name)))
 
 (option-provider JFileChooser file-chooser-options)
 
@@ -89,9 +85,9 @@
 
 (defn- show-file-chooser [^JFileChooser chooser parent type]
   (case type
-    :open (.showOpenDialog chooser parent) 
+    :open (.showOpenDialog chooser parent)
     :save (.showSaveDialog chooser parent)
-          (.showDialog chooser parent (str type))))
+    (.showDialog chooser parent (str type))))
 
 (defn- configure-file-chooser [^JFileChooser chooser opts]
   (apply-options chooser opts)
@@ -181,27 +177,27 @@
                    :as opts}] (if (keyword? (first args)) (cons nil args) args)
         parent  (if (keyword? parent) nil parent)
         ^JFileChooser chooser (configure-file-chooser
-                                (JFileChooser.)
-                                (dissoc
-                                  opts
-                                  :type
-                                  :remember-directory?
-                                  :success-fn
-                                  :cancel-fn))]
+                               (JFileChooser.)
+                               (dissoc
+                                opts
+                                :type
+                                :remember-directory?
+                                :success-fn
+                                :cancel-fn))]
     (when-let [[filter _] (seq (.getChoosableFileFilters chooser))]
       (.setFileFilter chooser filter))
     (let [result (show-file-chooser chooser parent type)
           multi? (.isMultiSelectionEnabled chooser)]
       (cond
         (= result JFileChooser/APPROVE_OPTION)
-          (do
-            (when remember-directory?
-              (remember-chooser-dir chooser))
-            (success-fn
-              chooser
-              (if multi?
-                (.getSelectedFiles chooser)
-                (.getSelectedFile chooser))))
+        (do
+          (when remember-directory?
+            (remember-chooser-dir chooser))
+          (success-fn
+           chooser
+           (if multi?
+             (.getSelectedFiles chooser)
+             (.getSelectedFile chooser))))
         :else (cancel-fn chooser)))))
 
 (defn choose-color
@@ -219,7 +215,7 @@
   "
   [& args]
   (let [[parent & {:keys [color title]
-                   :or { title "Choose a color"}
+                   :or {title "Choose a color"}
                    :as opts}] (if (keyword? (first args)) (cons nil args) args)
         parent (if (keyword? parent) nil parent)]
     (javax.swing.JColorChooser/showDialog parent title (to-color color))))

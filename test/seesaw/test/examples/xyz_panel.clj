@@ -13,23 +13,22 @@
         seesaw.test.examples.example)
   (:import [javax.swing SwingUtilities]))
 
-
 ; Put in some basic support for moving w around using behave/when-mouse-dragged.
 (defn movable [w]
   (let [start-point (java.awt.Point.)]
     (when-mouse-dragged w
       ; When the mouse is pressed, move the widget to the front of the z order
-      :start (fn [e]
-                (move! e :to-front)
-                (.setLocation start-point (.getPoint e)))
+                        :start (fn [e]
+                                 (move! e :to-front)
+                                 (.setLocation start-point (.getPoint e)))
       ; When the mouse is dragged move the widget
       ; Unfortunately, the delta passed to this function doesn't work correctly
       ; if the widget is moved during the drag. So, the move is calculated
       ; manually.
-      :drag (fn [e _]
-              (let [p (.getPoint e)]
-                (move! e :by [(- (.x p) (.x start-point)) 
-                              (- (.y p) (.y start-point))])))))
+                        :drag (fn [e _]
+                                (let [p (.getPoint e)]
+                                  (move! e :by [(- (.x p) (.x start-point))
+                                                (- (.y p) (.y start-point))])))))
   w)
 
 (defn make-label
@@ -38,16 +37,15 @@
     ; Instead of a boring label, make the label rounded with
     ; some custom drawing. Use the before paint hook to draw
     ; under the label's text.
-    (label
-      :border   5
-      :text     text
-      :location [(rand-int 300) (rand-int 300)]
-      :paint {
-        :before (fn [c g]
-                  (draw g (rounded-rect 3 3 (- (width c) 6) (- (height c) 6) 9)
-                          (style :foreground "#FFFFaa"
-                                  :background "#aaFFFF"
-                                  :stroke 2)))})
+   (label
+    :border   5
+    :text     text
+    :location [(rand-int 300) (rand-int 300)]
+    :paint {:before (fn [c g]
+                      (draw g (rounded-rect 3 3 (- (width c) 6) (- (height c) 6) 9)
+                            (style :foreground "#FFFFaa"
+                                   :background "#aaFFFF"
+                                   :stroke 2)))})
     ; Set the bounds to its preferred size. Note that this has to be
     ; done after the label is fully constructed.
     (config! :bounds :preferred)))
@@ -61,26 +59,26 @@
 
 (defn make-panel []
   (xyz-panel
-    :paint draw-grid
-    :id :xyz
-    :background "#222222"
-    :items (conj
-             (map (comp movable make-label) ["Agent Cooper" "Big Ed" "Leland Palmer"])
-             (doto (border-panel
-                       :border (line-border :top 15 :color "#AAFFFF")
-                       :north (label "I'm a draggable label with a text box!")
-                       :center (text :text "Hey type some stuff here"))
-                   (config! :bounds :preferred)
-                   movable))))
+   :paint draw-grid
+   :id :xyz
+   :background "#222222"
+   :items (conj
+           (map (comp movable make-label) ["Agent Cooper" "Big Ed" "Leland Palmer"])
+           (doto (border-panel
+                  :border (line-border :top 15 :color "#AAFFFF")
+                  :north (label "I'm a draggable label with a text box!")
+                  :center (text :text "Hey type some stuff here"))
+             (config! :bounds :preferred)
+             movable))))
 
 (defexample []
   (frame
-    :title   "Seesaw xyz-panel example"
-    :content (border-panel
-               :vgap 5
-               :north "Demonstration of an xyz-panel with draggable widgets. Try dragging one!"
-               :center (make-panel))
-    :size    [600 :by 600]))
+   :title   "Seesaw xyz-panel example"
+   :content (border-panel
+             :vgap 5
+             :north "Demonstration of an xyz-panel with draggable widgets. Try dragging one!"
+             :center (make-panel))
+   :size    [600 :by 600]))
 
 ;(run :dispose)
 

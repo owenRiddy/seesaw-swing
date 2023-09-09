@@ -18,41 +18,41 @@
 ; Make a tree model for some XML using same arguments (branch? and childnre) 
 ; as (clojure.core/tree-seq)
 (defn load-model []
-  (simple-tree-model 
-    (complement string?) 
-    (comp seq :content)
-    (clojure.xml/parse source)))
+  (simple-tree-model
+   (complement string?)
+   (comp seq :content)
+   (clojure.xml/parse source)))
 
 ; A custom renderer so that XML elements are displayed nicely
 (defn render-fn [renderer info]
   (let [v (:value info)]
-    (config! renderer 
-      :text (if (map? v) 
-              (format "<%s>" (name (:tag v)))
-              v))))
+    (config! renderer
+             :text (if (map? v)
+                     (format "<%s>" (name (:tag v)))
+                     v))))
 
 ; The rest is boilerplate ...
 (defn make-frame []
   (frame :title "JTree Example" :width 400 :height 400 :content
-    (border-panel
-      :north  (str "From: " source)
-      :center (scrollable (tree :id :tree
-                                :model (load-model)
-                                :renderer render-fn))
-      :south  (label :id :sel :text "Selection: "))))
+         (border-panel
+          :north  (str "From: " source)
+          :center (scrollable (tree :id :tree
+                                    :model (load-model)
+                                    :renderer render-fn))
+          :south  (label :id :sel :text "Selection: "))))
 
 (defexample []
   (let [f (make-frame)]
     ; Listen for selection changes and show them in the label
-    (listen (select f [:#tree]) 
-      :tree-will-expand #(println (str "Tree will expand\n" %))
-      :tree-will-collapse #(println (str "Tree will collapse\n" %))
-      :tree-expanded #(println (str "Tree expanded\n" %))
-      :tree-collapsed #(println (str "Tree collapsed\n" %))
-      :selection 
-        (fn [e] 
-          (config! (select f [:#sel]) 
-            :text (str "Selection: " (-> e selection first last)))))
+    (listen (select f [:#tree])
+            :tree-will-expand #(println (str "Tree will expand\n" %))
+            :tree-will-collapse #(println (str "Tree will collapse\n" %))
+            :tree-expanded #(println (str "Tree expanded\n" %))
+            :tree-collapsed #(println (str "Tree collapsed\n" %))
+            :selection
+            (fn [e]
+              (config! (select f [:#sel])
+                       :text (str "Selection: " (-> e selection first last)))))
     f))
 
 ;(run :dispose)

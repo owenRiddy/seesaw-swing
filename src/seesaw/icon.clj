@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for loading and creating icons."
       :author "Dave Ray"}
-  seesaw.icon
+ seesaw.icon
   (:use [seesaw.util :only [resource resource-key? to-url]])
   (:require [clojure.java.io :as jio])
   (:import [javax.swing ImageIcon]))
@@ -18,7 +18,7 @@
 ;*******************************************************************************
 ; Icons
 
-(defn ^javax.swing.Icon icon 
+(defn ^javax.swing.Icon icon
   "Loads an icon. The parameter p can be any of the following:
   
     nil              - returns nil
@@ -35,15 +35,15 @@
   "
   [p]
   (cond
-    (nil? p) nil 
+    (nil? p) nil
     (instance? javax.swing.Icon p) p
     (instance? java.awt.Image p)   (ImageIcon. ^java.awt.Image p)
     (instance? java.net.URL p)     (ImageIcon. ^java.net.URL p)
     (instance? java.io.File p)     (ImageIcon. (.getAbsolutePath ^java.io.File p))
     (resource-key? p)              (icon (resource p))
     :else
-      (if-let [url (jio/resource (str p))]
-        (icon url)
-        (if-let [url (to-url p)] 
-          (ImageIcon. url)))))
+    (if-let [url (jio/resource (str p))]
+      (icon url)
+      (if-let [url (to-url p)]
+        (ImageIcon. url)))))
 

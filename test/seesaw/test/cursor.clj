@@ -17,28 +17,28 @@
 
 (defmacro test-built-ins []
   `(testing "creating a built-in cursor"
-    ~@(for [[key value] (dissoc @#'seesaw.cursor/built-in-cursor-map :custom)]
-        `(it ~(str "should create a " key " cursor")
-          (expect (= ~value (-> (cursor ~key) (.getType))))))))
+     ~@(for [[key value] (dissoc @#'seesaw.cursor/built-in-cursor-map :custom)]
+         `(it ~(str "should create a " key " cursor")
+              (expect (= ~value (-> (cursor ~key) (.getType))))))))
 
 (describe cursor
-  (test-built-ins)
-  (it "should return its input if given a cursor"
-    (let [c (cursor :hand)]
-      (expect (= c (cursor c)))))
-  (it "should create a custom cursor from an image with hotspot (0, 0)"
-    (let [img (buffered-image 16 16)
-          cur (cursor img)]
+          (test-built-ins)
+          (it "should return its input if given a cursor"
+              (let [c (cursor :hand)]
+                (expect (= c (cursor c)))))
+          (it "should create a custom cursor from an image with hotspot (0, 0)"
+              (let [img (buffered-image 16 16)
+                    cur (cursor img)]
       ; Can't actually test that the image was set
-      (= (Cursor/CUSTOM_CURSOR) (.getType cur))))
-  (it "should create a custom cursor from an image with an [x y] hotspot"
-    (let [img (buffered-image 16 16)
-          cur (cursor img [5 5])]
+                (= (Cursor/CUSTOM_CURSOR) (.getType cur))))
+          (it "should create a custom cursor from an image with an [x y] hotspot"
+              (let [img (buffered-image 16 16)
+                    cur (cursor img [5 5])]
       ; Can't actually test that the hotspot was set
-      (= (Cursor/CUSTOM_CURSOR) (.getType cur))))
-  (it "should create a custom cursor from an icon with an [x y] hotspot"
-    (let [icon (javax.swing.ImageIcon. (buffered-image 16 16))
-          cur (cursor icon [5 5])]
+                (= (Cursor/CUSTOM_CURSOR) (.getType cur))))
+          (it "should create a custom cursor from an icon with an [x y] hotspot"
+              (let [icon (javax.swing.ImageIcon. (buffered-image 16 16))
+                    cur (cursor icon [5 5])]
       ; Can't actually test that the hotspot was set
-      (= (Cursor/CUSTOM_CURSOR) (.getType cur)))))
+                (= (Cursor/CUSTOM_CURSOR) (.getType cur)))))
 

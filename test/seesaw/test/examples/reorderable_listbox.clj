@@ -13,7 +13,6 @@
         seesaw.test.examples.example)
   (:require [seesaw.dnd :as dnd]))
 
-
 (defn list-with-elem-at-index
   "Given a sequence cur-order and elem-to-move is one of the items
 within it, return a vector that has all of the elements in the same
@@ -39,15 +38,14 @@ user=> (list-with-elem-at-index l \"b\" 4)
       cur-order
       (if (< new-idx cur-idx)
         (vec (concat (subvec cur-order 0 new-idx)
-                     [ elem-to-move ]
+                     [elem-to-move]
                      (subvec cur-order new-idx cur-idx)
                      (subvec cur-order (inc cur-idx))))
         ;; else new-idx > cur-idx
         (vec (concat (subvec cur-order 0 cur-idx)
                      (subvec cur-order (inc cur-idx) new-idx)
-                     [ elem-to-move ]
+                     [elem-to-move]
                      (subvec cur-order new-idx)))))))
-
 
 (defn reorderable-listbox
   "A listbox of items that the user can reorder by dragging and
@@ -64,24 +62,23 @@ new items are allowed to be added, nor may existing items be removed."
              :drop-mode :insert
              :transfer-handler
              (dnd/default-transfer-handler
-               :import [dnd/string-flavor
-                        (fn [{:keys [target data drop? drop-location] :as m}]
+              :import [dnd/string-flavor
+                       (fn [{:keys [target data drop? drop-location] :as m}]
                           ;; Ignore anything dropped onto the list
                           ;; that is not in the original set of list
                           ;; items.
-                          (if (and drop?
-                                   (:insert? drop-location)
-                                   (:index drop-location)
-                                   (item-set data))
-                            (let [new-order (list-with-elem-at-index
-                                              @item-list-atom data
-                                              (:index drop-location))]
-                              (reset! item-list-atom new-order)
-                              (config! target :model new-order))))]
-               :export {:actions (constantly :copy)
-                        :start   (fn [c]
-                                   [dnd/string-flavor (selection c)])}))))
-
+                         (if (and drop?
+                                  (:insert? drop-location)
+                                  (:index drop-location)
+                                  (item-set data))
+                           (let [new-order (list-with-elem-at-index
+                                            @item-list-atom data
+                                            (:index drop-location))]
+                             (reset! item-list-atom new-order)
+                             (config! target :model new-order))))]
+              :export {:actions (constantly :copy)
+                       :start   (fn [c]
+                                  [dnd/string-flavor (selection c)])}))))
 
 (defexample []
   (let [atom-with-cur-item-order (atom ["Pie" "Cake" "Cookies"

@@ -13,22 +13,20 @@
         seesaw.test.examples.example))
 
 (defn make-frame []
-  (frame 
-    :title "Slider Example"
-    :content
-      (horizontal-panel :items [
-        (vertical-panel :items [
-          "<html>
+  (frame
+   :title "Slider Example"
+   :content
+   (horizontal-panel :items [(vertical-panel :items ["<html>
           Slide the sliders to change<br>
           the color to the right</html>"
-          (slider :id :red   :min 0 :max 255)
-          (slider :id :green :min 0 :max 255)
-          (slider :id :blue  :min 0 :max 255)])
-        (canvas :id :canvas :border (line-border) :size [200 :by 200])])))
+                                                     (slider :id :red   :min 0 :max 255)
+                                                     (slider :id :green :min 0 :max 255)
+                                                     (slider :id :blue  :min 0 :max 255)])
+                             (canvas :id :canvas :border (line-border) :size [200 :by 200])])))
 
 (defn update-color [root]
   (let [{:keys [red green blue]} (value root)] ; <- Use (value) to get map of values
-    (config! (select root [:#canvas]) 
+    (config! (select root [:#canvas])
              :background (color red green blue))))
 
 (defexample []

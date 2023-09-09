@@ -10,14 +10,14 @@
 
 (ns ^{:doc "Functions for creating Swing cursors."
       :author "Dave Ray"}
-  seesaw.cursor
+ seesaw.cursor
   (:use [seesaw.util :only [constant-map illegal-argument]])
   (:import [java.awt Cursor Toolkit]))
 
 (def ^{:private true} built-in-cursor-map
   (constant-map Cursor {:suffix "_CURSOR"}
-    :crosshair :custom :default :hand :move :text :wait
-    :e-resize :n-resize :ne-resize :nw-resize :s-resize :se-resize :sw-resize :w-resize))
+                :crosshair :custom :default :hand :move :text :wait
+                :e-resize :n-resize :ne-resize :nw-resize :s-resize :se-resize :sw-resize :w-resize))
 
 (defn- custom-cursor
   [^java.awt.Image image & [point]]

@@ -24,18 +24,18 @@
 
 (defexample []
   (frame :title "Popup Menu Example" :width 500 :height 300
-    :content
-      (left-right-split
+         :content
+         (left-right-split
         ; Just a couple of labels with popup menus associated
 
-        (label :text "<html>Right Click Me<br>(static popup menu)</html>"
-               :border [5 (line-border)]
-               :popup static-popup)
+          (label :text "<html>Right Click Me<br>(static popup menu)</html>"
+                 :border [5 (line-border)]
+                 :popup static-popup)
 
-        (label :text "<html>No, Right Click Me!<br>(dynamically popuplated menu)</html>"
-               :border [5 (line-border)]
-               :popup dynamic-popup)
-        :divider-location 1/2)))
+          (label :text "<html>No, Right Click Me!<br>(dynamically popuplated menu)</html>"
+                 :border [5 (line-border)]
+                 :popup dynamic-popup)
+          :divider-location 1/2)))
 
 ;(run :dispose)
 

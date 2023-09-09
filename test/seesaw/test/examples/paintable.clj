@@ -20,16 +20,15 @@
         line-style (style :foreground "#FF0000" :stroke 3 :cap :round)
         d 5]
     (draw g
-      (line d d (- w d) (- h d)) line-style
-      (line (- w d) d d (- h d)) line-style)))
+          (line d d (- w d) (- h d)) line-style
+          (line (- w d) d d (- h d)) line-style)))
 
 (defn content []
   (flow-panel
-    :border 5
-    :items [
-      (label  :text "I'm a good label!" :font "ARIAL-BOLD-40" :foreground "#00AA00")
-      (label  :text "I'm a bad label!"  :font "ARIAL-BOLD-40" :paint draw-a-red-x)
-      (button :text "I'm a bad button!"  :font "ARIAL-BOLD-40" :paint draw-a-red-x)]))
+   :border 5
+   :items [(label  :text "I'm a good label!" :font "ARIAL-BOLD-40" :foreground "#00AA00")
+           (label  :text "I'm a bad label!"  :font "ARIAL-BOLD-40" :paint draw-a-red-x)
+           (button :text "I'm a bad button!"  :font "ARIAL-BOLD-40" :paint draw-a-red-x)]))
 
 (defexample []
   (frame :title "Seesaw :paint example"

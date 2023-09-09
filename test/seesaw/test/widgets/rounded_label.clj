@@ -14,10 +14,10 @@
         [lazytest.expect :only (expect)]))
 
 (describe rounded-label
-  (it "creates a sub-class of label"
-    (instance? javax.swing.JLabel (rounded-label)))
-  (it "honors label options"
-    (let [rl (rounded-label :text "hi" :background :blue)]
-      (expect (= "hi" (.getText rl)))
-      (expect (= java.awt.Color/BLUE (.getBackground rl))))))
+          (it "creates a sub-class of label"
+              (instance? javax.swing.JLabel (rounded-label)))
+          (it "honors label options"
+              (let [rl (rounded-label :text "hi" :background :blue)]
+                (expect (= "hi" (.getText rl)))
+                (expect (= java.awt.Color/BLUE (.getBackground rl))))))
 

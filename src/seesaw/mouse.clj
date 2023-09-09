@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for dealing with the mouse."
       :author "Dave Ray"}
-  seesaw.mouse
+ seesaw.mouse
   (:use [seesaw.util :only [illegal-argument]]))
 
 (defn- ^java.awt.PointerInfo info [] (java.awt.MouseInfo/getPointerInfo))
@@ -28,20 +28,20 @@
   ([v]
    (cond
      (instance? java.awt.event.MouseEvent v)
-        (let [^java.awt.event.MouseEvent e v]
-          [(.getX e) (.getY e)])
+     (let [^java.awt.event.MouseEvent e v]
+       [(.getX e) (.getY e)])
      :else (illegal-argument "Don't know how to get mouse location from %s" v))))
 
-(def ^ {:private true} input-modifier-table
+(def ^{:private true} input-modifier-table
   {:left java.awt.event.InputEvent/BUTTON1_DOWN_MASK
-    :center java.awt.event.InputEvent/BUTTON2_DOWN_MASK
+   :center java.awt.event.InputEvent/BUTTON2_DOWN_MASK
    :right java.awt.event.InputEvent/BUTTON3_DOWN_MASK})
 
-(def ^ {:private true} mouse-button-table
+(def ^{:private true} mouse-button-table
   {java.awt.event.MouseEvent/BUTTON1 :left
    java.awt.event.MouseEvent/BUTTON2 :center
    java.awt.event.MouseEvent/BUTTON3 :right
-   java.awt.event.MouseEvent/NOBUTTON nil })
+   java.awt.event.MouseEvent/NOBUTTON nil})
 
 (defn button-down?
   "Returns true if the given button is currently down in the given mouse

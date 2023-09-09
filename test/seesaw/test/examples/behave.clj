@@ -16,15 +16,14 @@
 
 (defn focus-select []
   (vertical-panel
-    :border "Demonstrates use of when-focused-select-all"
-    :items [
-      (doto
-        (text "All this will be selected when I get focus")
-        when-focused-select-all)
-      :separator
-      (doto
-        (combobox :editable? true :model ["Same here. Hit tab!" "First" "Second" "Third"])
-        when-focused-select-all)]))
+   :border "Demonstrates use of when-focused-select-all"
+   :items [(doto
+            (text "All this will be selected when I get focus")
+             when-focused-select-all)
+           :separator
+           (doto
+            (combobox :editable? true :model ["Same here. Hit tab!" "First" "Second" "Third"])
+             when-focused-select-all)]))
 
 (defexample []
   (frame :title "seesaw.behave examples" :content (focus-select)))

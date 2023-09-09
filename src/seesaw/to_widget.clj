@@ -13,20 +13,20 @@
   (:import [java.awt Dimension]
            [javax.swing Box JLabel JButton]))
 
-(defprotocol ToWidget 
+(defprotocol ToWidget
   (to-widget* [v]))
 
 (defmacro ^{:private true} def-to-widget [t b & forms]
-  `(extend-type 
-     ~t
-     ToWidget 
-      (~'to-widget*   ~b ~@forms)))
+  `(extend-type
+    ~t
+     ToWidget
+     (~'to-widget*   ~b ~@forms)))
 
 (def-to-widget Object [c] nil)
 
 (def-to-widget java.awt.Component [c] c)
 
-(def-to-widget java.util.EventObject 
-  [v] 
+(def-to-widget java.util.EventObject
+  [v]
   (try-cast java.awt.Component (.getSource v)))
 

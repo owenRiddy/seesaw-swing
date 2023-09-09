@@ -16,7 +16,6 @@
         seesaw.test.examples.example)
   (:require [seesaw.dnd :as dnd]))
 
-
 ;; I learned about the trick of first calling setSize on a Swing
 ;; component, in order to paint an image of it to a Graphics object
 ;; without displaying it on the screen, on the following web page:
@@ -31,7 +30,6 @@
     (.setSize comp pref-siz)
     (.paint comp gr)
     (ImageIcon. bi)))
-
 
 (defn toggle-listbox
   "A listbox of strings that are displayed as icons that look like
@@ -53,17 +51,17 @@ there purely for display purposes."
         max-height (apply max (map #(-> % :button-sel .getPreferredSize .height)
                                    buttons))
         label-to-icon-sel (into {}
-                           (map (fn [{:keys [label button-sel]}]
-                                  [label
-                                   (component-icon-image button-sel
-                                                         max-width max-height)])
-                                buttons))
+                                (map (fn [{:keys [label button-sel]}]
+                                       [label
+                                        (component-icon-image button-sel
+                                                              max-width max-height)])
+                                     buttons))
         label-to-icon-unsel (into {}
-                           (map (fn [{:keys [label button-unsel]}]
-                                  [label
-                                   (component-icon-image button-unsel
-                                                         max-width max-height)])
-                                buttons))
+                                  (map (fn [{:keys [label button-unsel]}]
+                                         [label
+                                          (component-icon-image button-unsel
+                                                                max-width max-height)])
+                                       buttons))
         render-item (fn [renderer info]
                       (let [{:keys [value selected?]} info
                             m (if selected?
@@ -72,7 +70,6 @@ there purely for display purposes."
                         (config! renderer :icon (m value) :text "")))]
     (listbox :model label-strs
              :renderer render-item)))
-
 
 (defexample []
   (frame

@@ -10,7 +10,7 @@
 
 (ns ^{:doc "Functions for mapping key strokes to actions."
       :author "Dave Ray"}
-  seesaw.keymap
+ seesaw.keymap
   (:use [seesaw.util :only [illegal-argument]]
         [seesaw.keystroke :only [keystroke]]
         [seesaw.action :only [action]]
@@ -23,11 +23,11 @@
     (instance? javax.swing.Action act) act
 
     (instance? javax.swing.AbstractButton act)
-      (let [^javax.swing.AbstractButton b act]
-        (action :handler (fn [_] (.doClick b))))
+    (let [^javax.swing.AbstractButton b act]
+      (action :handler (fn [_] (.doClick b))))
 
-    (fn? act) 
-      (action :handler act)
+    (fn? act)
+    (action :handler act)
     :else (illegal-argument "Don't know how to make key-map action from '%s'" act)))
 
 (defn- ^javax.swing.JComponent to-target [target]
@@ -37,9 +37,9 @@
     :else (illegal-argument "Don't know how to map keys on '%s'" target)))
 
 (def ^{:private true} scope-table
-  { :descendants javax.swing.JComponent/WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
-    :self        javax.swing.JComponent/WHEN_FOCUSED
-    :global      javax.swing.JComponent/WHEN_IN_FOCUSED_WINDOW })
+  {:descendants javax.swing.JComponent/WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+   :self        javax.swing.JComponent/WHEN_FOCUSED
+   :global      javax.swing.JComponent/WHEN_IN_FOCUSED_WINDOW})
 
 (def ^{:private true} default-scope (:descendants scope-table))
 

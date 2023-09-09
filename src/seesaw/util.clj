@@ -42,14 +42,14 @@
   Here, only (.put \"a\" 1) is executed.
   "
   [x & forms]
-    (let [gx (gensym)]
-      `(let [~gx ~x]
-         ~@(map (fn [[c a]]
-                  (if (seq? a)
-                    `(when ~c (~(first a) ~gx ~@(next a)))
-                    `(when ~c (~a ~gx))))
-                (partition 2 forms))
-         ~gx)))
+  (let [gx (gensym)]
+    `(let [~gx ~x]
+       ~@(map (fn [[c a]]
+                (if (seq? a)
+                  `(when ~c (~(first a) ~gx ~@(next a)))
+                  `(when ~c (~a ~gx))))
+              (partition 2 forms))
+       ~gx)))
 
 (defn to-seq
   "Stupid helper to turn possibly single values into seqs"
@@ -78,14 +78,13 @@
   (let [[options fields] (if (map? (first fields)) [(first fields) (rest fields)] [{} fields])
         {:keys [suffix] :or {suffix ""}} options]
     (reduce
-      (fn [m [k v]] (assoc m k v))
-      {}
-      (map
-        #(vector %1 (.. klass
+     (fn [m [k v]] (assoc m k v))
+     {}
+     (map
+      #(vector %1 (.. klass
                       (getDeclaredField (str (constantize-keyword %1) suffix))
                       (get nil)))
-        fields))))
-
+      fields))))
 
 (defn camelize
   "Convert input string to camelCase from hyphen-case"
@@ -117,9 +116,9 @@
   throw an exception and it uses (str) on the input."
   [s]
   (if (instance? URL s) s
-  (try
-    (URL. (str s))
-    (catch MalformedURLException e nil))))
+      (try
+        (URL. (str s))
+        (catch MalformedURLException e nil))))
 
 (defn ^URI to-uri
   "Try to make a java.net.URI from s"
@@ -136,7 +135,7 @@
   (cond
     (instance? java.awt.Dimension v) v
     (and (vector? v) (= 3 (count v)) (= :by (second v)))
-      (let [[w by h] v] (java.awt.Dimension. w h))
+    (let [[w by h] v] (java.awt.Dimension. w h))
     :else (illegal-argument "v must be a Dimension or [w :by h] got " v)))
 
 (defn to-insets
@@ -170,9 +169,9 @@
   "
   [root]
   (tree-seq
-    (constantly true)
-    children
-    root))
+   (constantly true)
+   children
+   root))
 
 (defn resource-key?
   "Returns true if v is a i18n resource key, i.e. a namespaced keyword"

@@ -16,25 +16,24 @@
 
 (defn frame-content []
   (mig-panel :constraints ["", "[right]"]
-    :items [
-      [ "General"          "split, span, gaptop 10"]
-      [ :separator         "growx, wrap, gaptop 10"]
-      [ "Company"          "gap 10"]
-      [ (text)             "span, growx"]
-      [ "Contact"          "gap 10"]
-      [ (text)             "span, growx, wrap"]
-                           
-      [ "Propeller"        "split, span, gaptop 10"]
-      [ :separator         "growx, wrap, gaptop 10"]
+             :items [["General"          "split, span, gaptop 10"]
+                     [:separator         "growx, wrap, gaptop 10"]
+                     ["Company"          "gap 10"]
+                     [(text)             "span, growx"]
+                     ["Contact"          "gap 10"]
+                     [(text)             "span, growx, wrap"]
 
-      [ "PTI/kW"           "gap 10"]
-      [ (text :columns 10) ""]
-      [ "Power/kW"         "gap 10"]
-      [ (text :columns 10) "wrap"]
-      [ "R/mm"             "gap 10"]
-      [ (text :columns 10) ""]
-      [ "D/mm"             "gap 10"]
-      [ (text :columns 10) ""]]))
+                     ["Propeller"        "split, span, gaptop 10"]
+                     [:separator         "growx, wrap, gaptop 10"]
+
+                     ["PTI/kW"           "gap 10"]
+                     [(text :columns 10) ""]
+                     ["Power/kW"         "gap 10"]
+                     [(text :columns 10) "wrap"]
+                     ["R/mm"             "gap 10"]
+                     [(text :columns 10) ""]
+                     ["D/mm"             "gap 10"]
+                     [(text :columns 10) ""]]))
 
 (defexample []
   (frame :title "MigLayout Example" :resizable? false :content (frame-content)))

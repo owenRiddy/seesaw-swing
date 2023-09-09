@@ -14,10 +14,9 @@
 
 (def colors [:black :white :blue :green :red :yellow :orange :purple nil])
 
-(def state (atom {
-  :tool   nil
-  :shapes []
-  :style  (style :foreground :black :background nil) }))
+(def state (atom {:tool   nil
+                  :shapes []
+                  :style  (style :foreground :black :background nil)}))
 
 (defn render [c g]
   (let [{:keys [shapes current-shape]} @state]
@@ -40,35 +39,25 @@
 
 (defn finish-new-shape [state event]
   (-> state
-    (update-in [:shapes] conj (:current-shape state))
-    (assoc :current-shape nil)))
+      (update-in [:shapes] conj (:current-shape state))
+      (assoc :current-shape nil)))
 
-(def tool-handlers {
-  :pencil {
-    :start (start-new-shape #(path [] (move-to %1 %2)))
-    :drag  (fn [state e delta]
-             (let [p (.getPoint e)
-                   [shape style] (:current-shape state)]
-               (.lineTo shape (.x p) (.y p))
-               state))
-    :finish finish-new-shape
-  }
-  :line {
-    :start  (start-new-shape #(line %1 %2 %1 %2))
-    :drag   (drag-new-shape line)
-    :finish finish-new-shape
-  }
-  :rect {
-    :start  (start-new-shape #(rect %1 %2 0 0))
-    :drag   (drag-new-shape #(rect %1 %2 (- %3 %1) (- %4 %2)))
-    :finish finish-new-shape
-  }
-  :ellipse {
-    :start  (start-new-shape #(ellipse %1 %2 0 0))
-    :drag   (drag-new-shape #(ellipse %1 %2 (- %3 %1) (- %4 %2)))
-    :finish finish-new-shape
-  }
-})
+(def tool-handlers {:pencil {:start (start-new-shape #(path [] (move-to %1 %2)))
+                             :drag  (fn [state e delta]
+                                      (let [p (.getPoint e)
+                                            [shape style] (:current-shape state)]
+                                        (.lineTo shape (.x p) (.y p))
+                                        state))
+                             :finish finish-new-shape}
+                    :line {:start  (start-new-shape #(line %1 %2 %1 %2))
+                           :drag   (drag-new-shape line)
+                           :finish finish-new-shape}
+                    :rect {:start  (start-new-shape #(rect %1 %2 0 0))
+                           :drag   (drag-new-shape #(rect %1 %2 (- %3 %1) (- %4 %2)))
+                           :finish finish-new-shape}
+                    :ellipse {:start  (start-new-shape #(ellipse %1 %2 0 0))
+                              :drag   (drag-new-shape #(ellipse %1 %2 (- %3 %1) (- %4 %2)))
+                              :finish finish-new-shape}})
 
 (defn switch-tool [state source]
   (let [selected? (selection source)]
@@ -94,9 +83,9 @@
     (listen tools  :selection #(swap! state switch-tool %))
     (listen styles :selection #(swap! state update-shape-style %))
     (when-mouse-dragged canvas
-      :start  (dispatch :start)
-      :drag   (dispatch :drag)
-      :finish (dispatch :finish))
+                        :start  (dispatch :start)
+                        :drag   (dispatch :drag)
+                        :finish (dispatch :finish))
     (doseq [s styles] #(swap! state update-shape-style s))
     (swap! state switch-tool (selection tools)))
   root)
@@ -106,34 +95,33 @@
 (defn color-cell [this {:keys [value selected?]}]
   (if value
     (config! this :background value
-                  :foreground (if (= :white value) :black :white))
+             :foreground (if (= :white value) :black :white))
     (config! this :text "None")))
 
 (defn make-ui []
   (frame
-    :title "Seesaw Scribble"
-    :size [800 :by 600]
-    :content
-      (border-panel
-        :border 5
-        :north (toolbar
-                 :floatable? false
-                 :items [(toggle :id :pencil  :class :tool :text "Pencil" :selected? true)
-                         (toggle :id :line    :class :tool :text "Line")
-                         (toggle :id :rect    :class :tool :text "Rect")
-                         (toggle :id :ellipse :class :tool :text "Ellipse")
-                         :separator
-                         "Width"
-                         (combobox :id :stroke :class :style :model [1 2 3 5 8 13 21])
-                         "Line"
-                         (combobox :id :foreground :class :style :model colors :renderer color-cell)
-                         "Fill"
-                         (selection! (combobox :id :background :class :style :model colors :renderer color-cell) nil)
-                         ])
-        :center (scrollable (canvas :id :canvas
-                                    :paint render
-                                    :preferred-size [500 :by 500]
-                                    :background :white)))))
+   :title "Seesaw Scribble"
+   :size [800 :by 600]
+   :content
+   (border-panel
+    :border 5
+    :north (toolbar
+            :floatable? false
+            :items [(toggle :id :pencil  :class :tool :text "Pencil" :selected? true)
+                    (toggle :id :line    :class :tool :text "Line")
+                    (toggle :id :rect    :class :tool :text "Rect")
+                    (toggle :id :ellipse :class :tool :text "Ellipse")
+                    :separator
+                    "Width"
+                    (combobox :id :stroke :class :style :model [1 2 3 5 8 13 21])
+                    "Line"
+                    (combobox :id :foreground :class :style :model colors :renderer color-cell)
+                    "Fill"
+                    (selection! (combobox :id :background :class :style :model colors :renderer color-cell) nil)])
+    :center (scrollable (canvas :id :canvas
+                                :paint render
+                                :preferred-size [500 :by 500]
+                                :background :white)))))
 
 (defexample []
   (-> (make-ui) add-behaviors))

@@ -19,8 +19,8 @@
 (defn do-request [url-str f]
   (future
     (let [result (if-let [url (to-url url-str)]
-                  (slurp url)
-                  "Invalid URL")]
+                   (slurp url)
+                   "Invalid URL")]
       (invoke-later (f result)))))
 
 (defexample []
@@ -34,29 +34,29 @@
         go-handler (fn [e]
                      (text! status "Busy")
                      (do-request
-                       (text url-text)
-                       result-handler))]
+                      (text url-text)
+                      result-handler))]
     (frame
-      :id :frame
-      :title "Hot Potatoes!"
-      :menubar (menubar :items [(menu :text "File" :items [exit-action])])
-      :width 500 :height 600
-      :content
-        (border-panel
-          :border 5
-          :north (toolbar :items [exit-action])
-          :center
-            (border-panel
-              :north
-                (horizontal-panel
-                  :border [5 "Configure Request"]
-                  :items ["URL" url-text
-                          (action :handler go-handler :name "Go")])
-              :center
-                (horizontal-panel
-                  :border [5 "Request Result"]
-                  :items [(scrollable result-text)]))
-          :south status))))
+     :id :frame
+     :title "Hot Potatoes!"
+     :menubar (menubar :items [(menu :text "File" :items [exit-action])])
+     :width 500 :height 600
+     :content
+     (border-panel
+      :border 5
+      :north (toolbar :items [exit-action])
+      :center
+      (border-panel
+       :north
+       (horizontal-panel
+        :border [5 "Configure Request"]
+        :items ["URL" url-text
+                (action :handler go-handler :name "Go")])
+       :center
+       (horizontal-panel
+        :border [5 "Request Result"]
+        :items [(scrollable result-text)]))
+      :south status))))
 
 ;(run :dispose)
 
