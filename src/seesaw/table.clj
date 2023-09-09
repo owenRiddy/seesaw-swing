@@ -9,7 +9,8 @@
 ;   You must not remove this notice, or any other, from this software.
 
 (ns seesaw.table
-  (:use [seesaw.util :only [illegal-argument]]))
+  (:use [seesaw.util :only [illegal-argument]])
+  (:require [cc.riddy.proxy-plus-minus :refer [proxy+- proxy-super+-]]))
 
 (defn- normalize-column [c]
   (conj {:text  (get c :text ((fnil name c) (:key c)))
@@ -42,45 +43,38 @@
 (defn- ^javax.swing.table.DefaultTableModel proxy-table-model
   [column-names column-key-map column-classes]
   (let [full-values (atom [])]
-    (proxy [javax.swing.table.DefaultTableModel] [(object-array column-names) 0]
-      (isCellEditable [row col] false)
-      (setRowCount [^Integer rows]
+    (proxy+- [(object-array column-names) 0]
+            javax.swing.table.DefaultTableModel
+      (isCellEditable [^javax.swing.table.DefaultTableModel this row col] false)
+      (setRowCount [^javax.swing.table.DefaultTableModel this ^int rows]
         ; trick to force proxy-super macro to see correct type to avoid reflection.
         (swap! full-values (fn [v]
                              (if (< rows (count v))
                                (subvec v rows)
                                (vec (concat v (take (- (count v) rows) (constantly nil)))))))
-        (let [^javax.swing.table.DefaultTableModel this this]
-          (proxy-super setRowCount rows)))
-      (addRow [^objects values]
+        (proxy-super+- setRowCount this rows))
+      (addRow [^javax.swing.table.DefaultTableModel this values]
         (swap! full-values conj (last values))
-        ; TODO reflection - I can't get rid of the reflection here without crashes
-        ; It has something to do with Object[] vs. Vector overrides.
-        (proxy-super addRow values))
-      (insertRow [row ^objects values]
+        (proxy-super+- addRow this values))
+      (insertRow [^javax.swing.table.DefaultTableModel this row values]
         (swap! full-values insert-at row (last values))
-        ; TODO reflection - I can't get rid of the reflection here without crashes
-        ; It has something to do with Object[] vs. Vector overrides.
-        (proxy-super insertRow row values))
-      (removeRow [row]
+        (proxy-super+- insertRow this row values))
+      (removeRow [^javax.swing.table.DefaultTableModel this row]
         (swap! full-values remove-at row)
-        (let [^javax.swing.table.DefaultTableModel this this]
-          (proxy-super removeRow row)))
+        (proxy-super+- removeRow this row))
       ; TODO this stuff is an awful hack and now that I'm wiser, I should fix it.
-      (getValueAt [row col]
+      (getValueAt [^javax.swing.table.DefaultTableModel this row col]
         (if (= -1 row col)
           column-key-map
           (if (= -1 col)
             (get @full-values row)
-            (let [^javax.swing.table.DefaultTableModel this this]
-              (proxy-super getValueAt row col)))))
-      (setValueAt [value row col]
+            (proxy-super+- getValueAt this row col))))
+      (setValueAt [^javax.swing.table.DefaultTableModel this value row col]
         (if (= -1 col)
           (swap! full-values assoc row value)
-          (let [^javax.swing.table.DefaultTableModel this this]
-            (proxy-super setValueAt value row col))))
-      (getColumnClass [^Integer c]
-        (proxy-super getColumnClass c)
+          (proxy-super+- setValueAt this value row col)))
+      (getColumnClass [^javax.swing.table.DefaultTableModel this ^int c]
+        (proxy-super+- getColumnClass this c)
         (nth column-classes c)))))
 
 (defn- get-full-value [^javax.swing.table.TableModel model row]
@@ -307,7 +301,9 @@
 (defn row-count
   "Return number of rows in a table model or JTable."
   [target]
-  (.getRowCount (to-table-model target)))
+  (let [^javax.swing.table.TableModel model
+        (to-table-model target)]
+    (.getRowCount model)))
 
 (defn column-count
   "Return number of columns in a table model or JTable."
