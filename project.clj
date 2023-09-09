@@ -1,4 +1,4 @@
-(defproject seesaw "1.5.1-SNAPSHOT"
+(defproject cc.riddy/seesaw-swing "2.0.0"
   :description "A Swing wrapper/DSL for Clojure. You want seesaw.core, FYI. See http://seesaw-clj.org for more info."
 
   :url "http://seesaw-clj.org"
@@ -26,7 +26,7 @@
                  [org.swinglabs.swingx/swingx-core "1.6.3"]
                  [j18n "1.0.2"]
                  [com.fifesoft/rsyntaxtextarea "2.5.6"]
-                 [cc.riddy/proxy-plus-minus "1.0.0-SNAPSHOT"]]
+                 [cc.riddy/proxy-plus-minus "1.0.0"]]
 
   :profiles {:dev {:dependencies [[com.stuartsierra/lazytest "1.1.2"]
                                   [lein-autodoc "0.9.0"]]}}
